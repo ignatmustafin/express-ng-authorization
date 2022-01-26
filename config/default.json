@@ -1,0 +1,15 @@
+{
+    "Server": {
+        "PORT": 3000
+    },
+    "DataBase": {
+        "config": {
+            "dialect": "postgres",
+            "host": "localhost",
+            "database": "quizgames",
+            "port": 5432,
+            "username": "devtaqtile",
+            "password": "just4Taqtile"
+        }
+    }
+}
