@@ -4,8 +4,9 @@
     "description": "",
     "main": "./server/app.ts",
     "scripts": {
-        "dev": "nodemon ./server/app.ts",
-        "test": "mocha"
+        "server": "nodemon ./server/app.ts",
+        "client": "npm run start --prefix client",
+        "dev": "concurrently \"npm run server\" \"npm run client\""
     },
     "author": "",
     "license": "ISC",
@@ -20,6 +21,7 @@
     },
     "devDependencies": {
         "@types/node": "^17.0.10",
+        "concurrently": "^7.0.0",
         "nodemon": "^2.0.15",
         "ts-node": "^10.4.0",
         "typescript": "^4.5.5"
