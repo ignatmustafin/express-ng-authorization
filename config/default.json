@@ -12,5 +12,8 @@
             "password": "just4Taqtile"
         }
     },
-    "jwt": "pudge"
+    "token": {
+        "jwt": "pudge",
+        "jwtRefresh": "mirana"
+    }
 }

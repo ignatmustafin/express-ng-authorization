@@ -12,8 +12,17 @@ export default class AuthController {
             const hashedPassword = await bcrypt.hash(password, 7);
 
             const user: any = await User.create({ firstName, lastName, email, password: hashedPassword});
+
+            const payload = {
+                id: user.dataValues.id
+            };
+
+            const tokens = TokenService.generateToken(payload);
+
+            await TokenService.saveToken(user.dataValues.id, tokens.refreshToken); 
     
-            res.status(201).json({success: true, data: `user with id ${user.dataValues.id} created successfully`});
+            res.cookie('refreshToken', tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
+            res.status(201).json({success: true, data: {...tokens}});
         } catch (error) {
             console.error(error);
             return res.status(500).json({success: false, error});
@@ -25,9 +34,6 @@ export default class AuthController {
             const {email, password} = req.body;
 
             const user: any = await User.findOne({where: {email}});
-
-            console.log(user);
-
             if (!user) {
                 return res.status(400).json({success: false, error: `user with email "${email}" is not exist`});
             }
@@ -37,8 +43,12 @@ export default class AuthController {
                 return res.status(400).json({success: false, error: "wrong password"});
             }
 
-            const token = TokenService.generateAccessToken(user._id);
-            return res.status(200).json({success: true, user: {id: user.id, token: `Bearer ${token}`}});
+            const payload = {id: user.id};
+
+            const tokens = TokenService.generateToken(payload);
+            
+            await TokenService.saveToken(user.id, tokens.refreshToken);
+            return res.status(200).json({success: true, user: {id: user.id, token: `Bearer ${tokens.accessToken}`}});
 
         } catch (error) {
             console.error(error);
