@@ -7,15 +7,23 @@
     justify-content: center;
     align-items: flex-start;
 
-    background-color: $background-color;
+
+    background-image: url("/assets/images/background/2.jpg");
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 
     .login-container {
-        margin-top: 30vh;
         @include flexCol;
+
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
 
         .header-wrapper {
             h2 {
-                @include setFont(golos-bold, 700, 24px, 30px, $black);
+                @include setFont(golos-bold, 700, 26px, 30px, $text-black);
             }
         }
 
@@ -51,7 +59,7 @@
                 justify-content: center;
 
                 a {
-                    @include setFont(golos-medium, 500, 16px, 20px, $button-background-primary);
+                    @include setFont(golos-medium, 500, 16px, 20px, $primary);
                     cursor: pointer;
 
                     &:hover {
@@ -76,4 +84,56 @@
 
 .mat-form-field {
     width: 400px;
+}
+
+::ng-deep .mat-form-field {
+    .mat-input-element {
+        color: $text-black;
+    }
+
+    .mat-form-field-label {
+        color: rgba($text-black, 0.6);
+    }
+
+    .mat-form-field-appearance-outline,
+    .mat-form-field-outline {
+        color: rgba($text-black, 0.2);
+    }
+}
+
+::ng-deep .mat-form-field:hover {
+    .mat-form-field-appearance-outline,
+    .mat-form-field-outline {
+        color: $primary;
+    }
+}
+
+::ng-deep .mat-form-field.mat-focused {
+    .mat-input-element {
+        color: $text-black;
+    }
+
+    .mat-form-field-label {
+        color: $primary;
+    }
+
+    .mat-form-field-appearance-outline,
+    .mat-form-field-outline {
+        color: $primary;
+    }
+}
+
+::ng-deep .mat-form-field.mat-form-field-invalid {
+    .mat-input-element {
+        color: $error-color;
+    }
+
+    .mat-form-field-label {
+        color: $error-color;
+    }
+
+    .mat-form-field-appearance-outline,
+    .mat-form-field-outline {
+        color: green;
+    }
 }

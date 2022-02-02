@@ -1,12 +1,13 @@
 <section class="login-section">
+   <!-- <img class="background-image" src="assets/images/background/1.jpg" alt="background image"/>-->
     <div class="login-container">
         <div class="header-wrapper">
-            <h2>Title</h2>
+            <h2>Quiz Games</h2>
         </div>
         <div class="body-wrapper">
             <form class="form" [formGroup]="form" (ngSubmit)="submit()">
                 <div class="form-group">
-                    <mat-form-field appearance="outline">
+                    <mat-form-field appearance="outline" hideRequiredMarker>
                         <mat-label>Enter your email</mat-label>
                         <input matInput placeholder="test@example.com" formControlName="email">
                         <!--<mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>-->
@@ -14,9 +15,9 @@
                 </div>
 
                 <div class="form-group">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Enter your email</mat-label>
-                        <input matInput placeholder="test@example.com" formControlName="email">
+                    <mat-form-field appearance="outline" hideRequiredMarker>
+                        <mat-label>Password</mat-label>
+                        <input matInput placeholder="" formControlName="password">
                         <!--<mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>-->
                     </mat-form-field>
                 </div>
