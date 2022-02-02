@@ -1,16 +1,23 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule, Routes} from "@angular/router";
-import {AuthComponent} from './components/auth/auth.component';
+import {RegisterComponent} from './components/register/register.component';
+import {LoginComponent} from './components/login/login.component';
+import {SharedModule} from "../../shared/shared.module";
 
-const routes: Routes = [{path: '', component: AuthComponent}]
+const routes: Routes = [
+  {path: 'login', component: LoginComponent},
+  {path: 'register', component: RegisterComponent}
+]
 
 @NgModule({
   declarations: [
-    AuthComponent
+    RegisterComponent,
+    LoginComponent
   ],
   imports: [
     CommonModule,
+    SharedModule,
     RouterModule.forChild(routes),
   ]
 })

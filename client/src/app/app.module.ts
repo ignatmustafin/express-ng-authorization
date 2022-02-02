@@ -9,23 +9,25 @@ import {AppComponent} from './app.component';
 import {ContentComponent} from "./layout/content/content.component";
 import {HeaderComponent} from "./layout/header/header.component";
 import {FooterComponent} from "./layout/footer/footer.component";
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    ContentComponent,
-    FooterComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
+    declarations: [
+        AppComponent,
+        HeaderComponent,
+        ContentComponent,
+        FooterComponent,
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
 
-    CoreModule,
-    SharedModule,
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+        CoreModule,
+        SharedModule,
+        BrowserAnimationsModule,
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }

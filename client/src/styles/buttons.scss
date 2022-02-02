@@ -1,0 +1,10 @@
+@import "colors";
+@import "mixins";
+
+.mat-button-base {
+    @include setFont(opensans-bold, 700, 16px, 18px, $white);
+}
+
+.mat-button-base.primary-btn {
+    background-color: $button-background-primary;
+}

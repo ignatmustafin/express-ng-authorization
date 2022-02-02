@@ -6,7 +6,7 @@ import {AuthGuard} from "./core/guards/auth.guard";
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/login',
+    redirectTo: '/auth/login',
     pathMatch: 'full'
   },
   {
@@ -21,12 +21,12 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'login',
+    path: 'auth',
     loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule)
   },
   {
     path: '**',
-    redirectTo: '/login'
+    redirectTo: '/auth/login'
   }
 ];
 

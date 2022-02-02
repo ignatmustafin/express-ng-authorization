@@ -1,1 +1,110 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@include mat.core();
+
+
+$client-primary: mat.define-palette(mat.$indigo-palette);
+$client-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$client-warn: mat.define-palette(mat.$red-palette);
+
+$client-theme: mat.define-light-theme((
+    color: (
+        primary: $client-primary,
+        accent: $client-accent,
+        warn: $client-warn,
+    )
+));
+
+@include mat.all-component-themes($client-theme);
+
+@font-face {
+    font-family: 'golos-regular';
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('/assets/fonts/Golos/Golos-UI_Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'golos-medium';
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('/assets/fonts/Golos/Golos-UI_Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'golos-bold';
+    font-weight: 700;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('/assets/fonts/Golos/Golos-UI_Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'merriweather-regular';
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('/assets/fonts/Merriweather/Merriweather-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'merriweather-bold';
+    font-weight: 700;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('/assets/fonts/Merriweather/Merriweather-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'merriweather-black';
+    font-weight: 900;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('/assets/fonts/Merriweather/Merriweather-Black.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'opensans-regular';
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('/assets/fonts/OpenSans/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'opensans-medium';
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('/assets/fonts/OpenSans/OpenSans-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'opensans-semibold';
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('/assets/fonts/OpenSans/OpenSans-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'opensans-bold';
+    font-weight: 700;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('/assets/fonts/OpenSans/OpenSans-Bold.ttf') format('truetype');
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: merriweather-regular, "Helvetica Neue", sans-serif;
+    font-size: 12px;
+    line-height: 18px;
+    color: #000000;
+}
