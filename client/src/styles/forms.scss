@@ -1,10 +1,80 @@
 @import "colors";
 @import "mixins";
 
-.mat-button-base {
-    @include setFont(opensans-bold, 700, 16px, 18px, $white);
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-box-shadow: 0 0 0 1000px #fff inset;
+    -webkit-text-fill-color: $text-black !important;
+
 }
 
-.mat-button-base.primary-btn {
-    background-color: $primary;
+.mat-button-base {
+    @include setFont(opensans-bold, 700, 16px, 18px, $white);
+
+    &.primary-btn {
+        background-color: $primary;
+    }
+}
+
+::ng-deep .mat-form-field {
+    .mat-input-element {
+        color: $text-black;
+    }
+
+    .mat-form-field-label {
+        color: rgba($text-black, 0.6);
+    }
+
+    .mat-form-field-appearance-outline,
+    .mat-form-field-outline {
+        color: rgba($text-black, 0.2);
+    }
+
+    &:hover {
+        .mat-form-field-label {
+            color: $primary;
+        }
+
+        .mat-form-field-appearance-outline,
+        .mat-form-field-outline {
+            color: $primary;
+        }
+    }
+}
+
+::ng-deep .mat-form-field.mat-focused {
+    .mat-input-element {
+        color: $text-black;
+    }
+
+    .mat-form-field-label {
+        color: $primary;
+    }
+
+    .mat-form-field-appearance-outline,
+    .mat-form-field-outline {
+        color: $primary;
+    }
+}
+
+::ng-deep .mat-form-field.mat-form-field-invalid {
+    .mat-input-element {
+        color: $error-color;
+    }
+
+    .mat-form-field-label {
+        color: $error-color;
+    }
+
+    .mat-form-field-appearance-outline,
+    .mat-form-field-outline {
+        color: $error-color !important;
+    }
+
+    .mat-error {
+        color: $error-color;
+    }
 }

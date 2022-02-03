@@ -3,11 +3,11 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+    selector: 'app-reset-password',
+    templateUrl: './reset-password.component.html',
+    styleUrls: ['./reset-password.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class ResetPasswordComponent implements OnInit {
 
     public form !: FormGroup;
 
@@ -42,11 +42,11 @@ export class LoginComponent implements OnInit {
         }
     }
 
-    errorHandling = (control: string, error: string) => {
+    public errorHandling = (control: string, error: string) => {
         return this.form.controls[control].hasError(error);
     }
 
-    checkChange(control: string) {
+    public checkChange(control: string) {
         const field = this.form.controls[control];
 
         if (!field.value) {

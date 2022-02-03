@@ -1,0 +1,78 @@
+<section class="login-section">
+    <div class="login-container">
+        <div class="header-wrapper">
+            <h2>Quiz Games</h2>
+        </div>
+        <div class="body-wrapper">
+            <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+                <div class="form-group">
+                    <mat-form-field appearance="outline" hideRequiredMarker>
+                        <mat-label>Email</mat-label>
+                        <input matInput placeholder="test@example.com" formControlName="email"
+                               (blur)="checkChange('email')">
+                        <mat-error *ngIf="errorHandling('email', 'required')">
+                            Email is required
+                        </mat-error>
+                        <mat-error *ngIf="errorHandling('email', 'email')">
+                            Not a valid email (ex. test@gmail.com)
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group">
+                    <mat-form-field appearance="outline" hideRequiredMarker>
+                        <mat-label>First Name</mat-label>
+                        <input matInput placeholder="First Name" formControlName="firstName"
+                               (blur)="checkChange('firstName')">
+                        <mat-error *ngIf="errorHandling('email', 'required')">
+                            First Name is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group">
+                    <mat-form-field appearance="outline" hideRequiredMarker>
+                        <mat-label>Last Name</mat-label>
+                        <input matInput placeholder="Last Name" formControlName="lastName"
+                               (blur)="checkChange('email')">
+                        <mat-error *ngIf="errorHandling('email', 'required')">
+                            Last Name is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group">
+                    <mat-form-field appearance="outline" hideRequiredMarker>
+                        <mat-label>Password</mat-label>
+                        <input matInput type="password" placeholder="" formControlName="password"
+                               (blur)="checkChange('password')">
+                        <mat-error *ngIf="errorHandling('password', 'required')">
+                            Password is required
+                        </mat-error>
+                        <mat-error *ngIf="errorHandling('password', 'minlength')">
+                            Password cannot be less than 6 characters
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group">
+                    <mat-form-field appearance="outline" hideRequiredMarker>
+                        <mat-label>Confirm password</mat-label>
+                        <input matInput type="password" placeholder="" formControlName="confirmPassword"
+                               (blur)="checkChange('confirmPassword')">
+                        <mat-error *ngIf="errorHandling('confirmPassword', 'notMatch')">
+                            Confirm password must match the entered password
+                        </mat-error>
+                        <mat-error *ngIf="errorHandling('confirmPassword', 'required')">
+                            Confirm password is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <button class="primary-btn" mat-flat-button color="primary" type="submit">
+                    Register
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
