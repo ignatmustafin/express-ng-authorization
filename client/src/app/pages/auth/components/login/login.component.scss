@@ -14,51 +14,21 @@
     background-size: cover;
 
     .login-container {
-        @include flexCol;
-
         position: relative;
         top: 50%;
         transform: translateY(-50%);
 
-        .header-wrapper {
-            h2 {
-                @include setFont(golos-bold, 700, 26px, 30px, $text-black);
-            }
+        h2 {
+            @include setFont(golos-bold, 700, 26px, 30px, $text-black);
+            margin-bottom: 25px;
+            text-align: center;
         }
 
         .body-wrapper {
-            padding: 60px 40px;
+            padding: 40px 40px 60px;
 
             background-color: $white;
             box-shadow: rgb(0 0 0 / 10%) 0 0 10px;
-
-            .form {
-                @include flexCol;
-
-                .form-group {
-                    margin-top: 15px;
-
-                    &:first-child {
-                        margin-top: 0;
-                    }
-                }
-
-                button {
-                    width: 100%;
-                    height: 40px;
-                    margin-top: 40px;
-                }
-
-                a {
-                    align-self: flex-end;
-                    @include setFont(golos-medium, 500, 16px, 20px, $primary);
-                    cursor: pointer;
-
-                    &:hover {
-                        text-decoration: underline;
-                    }
-                }
-            }
 
             .controls {
                 margin-top: 20px;
@@ -72,8 +42,4 @@
             }
         }
     }
-}
-
-.mat-form-field {
-    width: 400px;
 }

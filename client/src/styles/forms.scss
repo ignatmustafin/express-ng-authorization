@@ -1,6 +1,40 @@
 @import "colors";
 @import "mixins";
 
+.form {
+    @include flexCol;
+
+    .form-group {
+        margin-top: 10px;
+        font-size: 14px;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    button {
+        width: 100%;
+        height: 40px;
+        margin-top: 40px;
+    }
+
+    a {
+        align-self: flex-end;
+        @include setFont(golos-medium, 500, 16px, 20px, $primary);
+        cursor: pointer;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .mat-form-field {
+        width: 400px;
+    }
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -8,14 +42,18 @@ input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
     -webkit-box-shadow: 0 0 0 1000px #fff inset;
     -webkit-text-fill-color: $text-black !important;
-
 }
 
 .mat-button-base {
     @include setFont(opensans-bold, 700, 16px, 18px, $white);
 
-    &.primary-btn {
+    &.flat-primary-btn {
         background-color: $primary;
+    }
+
+    &.stroked-primary-btn {
+        color: $primary;
+        border-color: $primary;
     }
 }
 

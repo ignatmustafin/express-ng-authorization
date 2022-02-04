@@ -1,9 +1,8 @@
 <section class="login-section">
     <div class="login-container">
-        <div class="header-wrapper">
-            <h2>Quiz Games</h2>
-        </div>
         <div class="body-wrapper">
+            <h2>Quiz Games</h2>
+
             <form class="form" [formGroup]="form" (ngSubmit)="submit()" autocomplete="off">
                 <div class="form-group">
                     <mat-form-field appearance="outline" hideRequiredMarker>
@@ -35,13 +34,13 @@
 
                 <a routerLink="/auth/reset-password">Forgot your password?</a>
 
-                <button class="primary-btn" mat-flat-button color="primary" type="submit">
+                <button class="flat-primary-btn" mat-flat-button color="primary" type="submit">
                     Log In
                 </button>
             </form>
 
             <div class="controls">
-                <button class="primary-btn" routerLink="/auth/registration" mat-flat-button color="primary" type="submit">
+                <button class="stroked-primary-btn" routerLink="/auth/registration" mat-stroked-button color="primary" type="submit">
                     Create new account
                 </button>
             </div>

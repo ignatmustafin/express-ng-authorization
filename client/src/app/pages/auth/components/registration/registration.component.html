@@ -1,9 +1,8 @@
-<section class="login-section">
-    <div class="login-container">
-        <div class="header-wrapper">
-            <h2>Quiz Games</h2>
-        </div>
+<section class="registration-section">
+    <div class="registration-container">
         <div class="body-wrapper">
+            <h2>Quiz Games</h2>
+
             <form class="form" [formGroup]="form" (ngSubmit)="submit()">
                 <div class="form-group">
                     <mat-form-field appearance="outline" hideRequiredMarker>
@@ -24,7 +23,7 @@
                         <mat-label>First Name</mat-label>
                         <input matInput placeholder="First Name" formControlName="firstName"
                                (blur)="checkChange('firstName')">
-                        <mat-error *ngIf="errorHandling('email', 'required')">
+                        <mat-error *ngIf="errorHandling('firstName', 'required')">
                             First Name is required
                         </mat-error>
                     </mat-form-field>
@@ -34,8 +33,8 @@
                     <mat-form-field appearance="outline" hideRequiredMarker>
                         <mat-label>Last Name</mat-label>
                         <input matInput placeholder="Last Name" formControlName="lastName"
-                               (blur)="checkChange('email')">
-                        <mat-error *ngIf="errorHandling('email', 'required')">
+                               (blur)="checkChange('firstName')">
+                        <mat-error *ngIf="errorHandling('firstName', 'required')">
                             Last Name is required
                         </mat-error>
                     </mat-form-field>
@@ -69,7 +68,7 @@
                     </mat-form-field>
                 </div>
 
-                <button class="primary-btn" mat-flat-button color="primary" type="submit">
+                <button class="flat-primary-btn" mat-flat-button color="primary" type="submit">
                     Register
                 </button>
             </form>
