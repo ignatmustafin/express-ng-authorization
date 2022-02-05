@@ -1,6 +1,6 @@
 import { check } from "express-validator";
 import User from "../models/user.model";
-
+import ApiError from "../exceptions/api.errors";
 
 export  default {
     registrationValidators: 
@@ -24,7 +24,7 @@ export  default {
             .custom(async (value) => {
                 const candidate = await User.findOne({where: {email: value}});
                 if (candidate) {
-                    throw new Error("email already in use");
+                    throw ApiError.BadRequest("email already in use");
                 }
             }),
             check('password')

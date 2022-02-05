@@ -4,6 +4,7 @@ import cors from 'cors';
 import config from "config";
 import mainRouter from "./routes/mainRouter";
 import { checkDbConnection } from "./data_base/db.connect";
+import errorMiddleware from "./middlewares/errors.mdw";
 
 const app = express();
 const PORT = config.get("Server.PORT") || 3000;
@@ -14,9 +15,7 @@ app.use(cors());
 
 app.use("/api", mainRouter);
 
-app.get("/api", (req, res) => {
-    res.send("HELLO WOROLD");
-});
+app.use(errorMiddleware);
 
 
 async function connectToDbBeforeServerStarted() {

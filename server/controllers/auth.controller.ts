@@ -1,60 +1,32 @@
-import  express  from 'express';
-import User from "../models/user.model";
-import bcrypt from 'bcrypt';
-import TokenService from '../services/token.service';
+import express from 'express';
+import userService from '../services/user.service';
 export default class AuthController {
 
-    async userRegistration(req: express.Request, res: express.Response) {
+    async userRegistration(req: express.Request, res: express.Response, next: any) {
         try {
 
             const { firstName, lastName, email, password } = req.body;
 
-            const hashedPassword = await bcrypt.hash(password, 7);
+            const userData = await userService.registration(email, password, firstName, lastName) as any;
 
-            const user: any = await User.create({ firstName, lastName, email, password: hashedPassword});
-
-            const payload = {
-                id: user.dataValues.id
-            };
-
-            const tokens = TokenService.generateToken(payload);
-            console.log(tokens);
-            await TokenService.saveToken(user.dataValues.id, tokens.refreshToken); 
-                        
-            res.cookie('refreshToken', tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
-            res.status(201).json({success: true, data: {...tokens}});
+            res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+            res.status(201).json({ success: true, data: userData });
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({success: false, error});
+            next(error);
         }
     }
 
-    async userLogIn(req: express.Request, res: express.Response) {
+    async userLogIn(req: express.Request, res: express.Response, next: any) {
         try {
-            const {email, password} = req.body;
+            const { email, password } = req.body;
 
-            const user: any = await User.findOne({where: {email}});
-            if (!user) {
-                return res.status(400).json({success: false, error: `user with email "${email}" is not exist`});
-            }
+            const userData = await userService.login(email, password);
 
-            const validPassword = await bcrypt.compare(password, user.password);
-            if (!validPassword) {
-                return res.status(400).json({success: false, error: "wrong password"});
-            }
 
-            const payload = {
-                id: user.id
-            };
-
-            const tokens = TokenService.generateToken(payload);
-            
-            await TokenService.saveToken(user.id, tokens.refreshToken);
-            return res.status(200).json({success: true, user: {id: user.id, data: {...tokens}}});
-
+            res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+            return res.status(201).json({ success: true, data: userData });
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({success: false, error});
+            next(error);
         }
-    }   
+    }
 }
