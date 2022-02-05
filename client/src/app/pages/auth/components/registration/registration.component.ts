@@ -32,15 +32,16 @@ export class RegistrationComponent implements OnInit {
                 email: this.form.controls['email'].value,
                 password: this.form.controls['password'].value,
                 firstName: this.form.controls['firstName'].value,
-                lastName: this.form.controls['lastName'].value
-            }
+                lastName: this.form.controls['lastName'].value,
+                passwordConfirmation: this.form.controls['confirmPassword'].value
+            };
 
-            this.http.post('http://localhost:3000/api/auth/registration', body).subscribe({
+            this.http.post('/api/auth/registration', body).subscribe({
                 next: response => {
-                    console.log(response)
+                    console.log(response);
                 },
                 error: error => {
-                    console.log(error)
+                    console.log(error);
                 }
             });
         }
@@ -59,7 +60,7 @@ export class RegistrationComponent implements OnInit {
         }
 
         return this.form.controls[control].hasError(error);
-    }
+    };
 
     checkChange(control: string) {
         const field = this.form.controls[control];

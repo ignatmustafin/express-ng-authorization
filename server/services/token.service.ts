@@ -21,7 +21,7 @@ class TokenService {
             return tokenWasRefreshed;
         }
         
-        const createToken = await Token.create({user_id: userId, refresh_token: refreshToken});
+        const createToken = await Token.create({user_id: userId, refreshToken});
         return createToken;
     }
 }
