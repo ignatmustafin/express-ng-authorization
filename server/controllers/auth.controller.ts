@@ -18,9 +18,9 @@ export default class AuthController {
             };
 
             const tokens = TokenService.generateToken(payload);
-
+            console.log(tokens);
             await TokenService.saveToken(user.dataValues.id, tokens.refreshToken); 
-    
+                        
             res.cookie('refreshToken', tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
             res.status(201).json({success: true, data: {...tokens}});
         } catch (error) {
@@ -43,16 +43,18 @@ export default class AuthController {
                 return res.status(400).json({success: false, error: "wrong password"});
             }
 
-            const payload = {id: user.id};
+            const payload = {
+                id: user.id
+            };
 
             const tokens = TokenService.generateToken(payload);
             
             await TokenService.saveToken(user.id, tokens.refreshToken);
-            return res.status(200).json({success: true, user: {id: user.id, token: `Bearer ${tokens.accessToken}`}});
+            return res.status(200).json({success: true, user: {id: user.id, data: {...tokens}}});
 
         } catch (error) {
             console.error(error);
             return res.status(500).json({success: false, error});
         }
-    }
+    }   
 }
