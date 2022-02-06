@@ -1,6 +1,5 @@
 import express from 'express';
 import { validationResult, ValidationChain } from 'express-validator';
-import ApiError from '../exceptions/api.errors';
 
 export default function authValidation(validations: ValidationChain[]) {
     return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -13,9 +12,11 @@ export default function authValidation(validations: ValidationChain[]) {
             if(result.errors.length) break;
         }
         const errors = validationResult(req) as any;
+        console.log(errors)
         if(errors.isEmpty()) {
             return next();
         }
-        return next(ApiError.BadRequest("Validation error", errors.errors[0].msg));
+        console.log(111)
+        res.status(400).json({success: false, error: errors.errors[0].msg});
     };
 }

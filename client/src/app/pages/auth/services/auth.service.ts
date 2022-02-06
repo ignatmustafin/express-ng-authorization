@@ -1,30 +1,26 @@
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { ILogIn, User } from './../../../shared/interfaces';
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AuthService {
+    private currentTokenValueSubject !: BehaviorSubject<any>;
 
-  private token = null;
+    constructor(
+        private http: HttpClient
+    ) {
+        this.currentTokenValueSubject = new BehaviorSubject<any>(
+            JSON.parse(<string>localStorage.getItem('auth_token'))
+        );
+    }
 
-  constructor(private http: HttpClient) {
-    
-  }
+    getCurrentUserSubject(): Observable<string> {
+        return this.currentTokenValueSubject.asObservable();
+    }
 
-  isAuthenticated() {
-    return true;
-  }
-
-  login(user: User): Observable<ILogIn> {
-    return this.http.post<ILogIn>('/api/auth/signIn', user);
-  }
-
-  getToken() {
-    
-  }
-
-  
+    getCurrentUserTokenValue(): string {
+        return this.currentTokenValueSubject.value;
+    }
 }
