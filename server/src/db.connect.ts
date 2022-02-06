@@ -19,5 +19,4 @@ export async function checkDbConnection() {
     }
 }
 
-
 export default sequelize;

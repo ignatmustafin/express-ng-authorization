@@ -1,6 +1,5 @@
-import { User } from '../interfaces/db.interface';
-import sequelize from '../data_base/db.connect';
-import { DataTypes } from 'sequelize';
+import sequelize from '../db.connect';
+import {DataTypes} from 'sequelize';
 
 const User = sequelize.define(
     "users",
@@ -20,7 +19,7 @@ const User = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
             field: "last_name"
-        }, 
+        },
         email: {
             type: DataTypes.STRING,
             allowNull: false,

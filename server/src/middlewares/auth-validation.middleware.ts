@@ -1,6 +1,6 @@
 import express from 'express';
-import { validationResult, ValidationChain } from 'express-validator';
-import ApiError from '../exceptions/api.errors';
+import {validationResult, ValidationChain} from 'express-validator';
+import ApiError from '../services/error-service/api.errors';
 
 export default function authValidation(validations: ValidationChain[]) {
     return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -8,14 +8,20 @@ export default function authValidation(validations: ValidationChain[]) {
             next();
         }
 
-        for(const validation of validations) {
+        for (const validation of validations) {
             const result: any = await validation.run(req);
-            if(result.errors.length) break;
+
+            if (result.errors.length) {
+                break;
+            }
         }
+
         const errors = validationResult(req) as any;
-        if(errors.isEmpty()) {
+
+        if (errors.isEmpty()) {
             return next();
         }
+
         return next(ApiError.BadRequest("Validation error", errors.errors[0].msg));
     };
 }

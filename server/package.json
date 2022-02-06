@@ -4,8 +4,8 @@
     "description": "",
     "main": "./server/app.ts",
     "scripts": {
-        "server": "nodemon ./server/app.ts",
-        "client": "npm run start --prefix client",
+        "server": "nodemon ./src/app.ts",
+        "client": "npm run start --prefix ../client",
         "dev": "concurrently \"npm run server\" \"npm run client\""
     },
     "author": "",

@@ -1,6 +1,6 @@
-import  User  from './user.model';
-import sequelize from '../data_base/db.connect';
-import { DataTypes } from 'sequelize';
+import User from './user.model';
+import sequelize from '../db.connect';
+import {DataTypes} from 'sequelize';
 
 const Token = sequelize.define(
     "tokens",
@@ -16,13 +16,14 @@ const Token = sequelize.define(
             allowNull: false,
             field: "refresh_token"
         },
-        
+
     },
 );
 
-Token.belongsTo(User, {foreignKey: {
-    name: 'user_id',
-    allowNull: false,
+Token.belongsTo(User, {
+    foreignKey: {
+        name: 'user_id',
+        allowNull: false,
     },
     onDelete: 'cascade',
     onUpdate: 'cascade'
