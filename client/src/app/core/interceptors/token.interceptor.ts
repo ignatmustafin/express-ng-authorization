@@ -14,10 +14,9 @@ export class TokenInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const currentUser = this.authService.currentUserValue;
-        console.log(currentUser)
         const isLoggedIn = currentUser && currentUser.accessToken;
         const isApiUrl = request.url.startsWith(environment.apiUrl);
-        console.log(isLoggedIn)
+
         if (isLoggedIn && isApiUrl) {
             request = request.clone({
                 setHeaders: {

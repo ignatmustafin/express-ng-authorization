@@ -27,12 +27,10 @@ export class AuthService {
         return this.http.post(`/auth/signIn`, {email, password})
             .pipe(
                 map(response => {
-                    console.log(response)
-                    const token = response.data.accessToken;
                     localStorage.setItem('quiz.user', JSON.stringify(response.data));
                     this.currentUserSubject.next(response.data);
-                    console.log(this.currentUserSubject.value)
-                    return token;
+
+                    return response;
                 })
             );
     }
