@@ -19,7 +19,8 @@
         "semi": [1, "always"],
         "no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
         "no-multiple-empty-lines": ["warn", {"max": 2, "maxEOF": 0, "maxBOF": 0}],
-        "@typescript-eslint/no-explicit-any": "off"
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-empty-function": ["warn"]
     },
     "ignorePatterns": [
     "node_modules",
