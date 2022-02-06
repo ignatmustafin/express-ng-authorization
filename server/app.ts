@@ -26,7 +26,7 @@ async function connectToDbBeforeServerStarted() {
         });
         
     } catch (error) {
-        console.error(error);
+
         return error;
     }
 }

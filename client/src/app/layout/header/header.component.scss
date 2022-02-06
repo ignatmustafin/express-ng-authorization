@@ -1,0 +1,93 @@
+@import "src/styles/main";
+
+.header-container {
+    padding: 10px 40px;
+    background-color: $primary;
+
+    @include flexRow;
+
+    .menu-wrapper {
+        @include flexRow;
+
+        .logo-container {
+            height: 50px;
+
+            img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        .navigation_menu_list {
+            margin: 0 0 0 60px;
+            padding: 0;
+
+            @include flexRow;
+            list-style: none;
+
+            .menu_list_item {
+                margin-right: 30px;
+
+                a {
+                    text-decoration: none;
+                    text-transform: uppercase;
+                    @include setFont(opensans-bold, 700, 16px, 22px, rgba($footer-color, 0.8));
+                    position: relative;
+
+                    &:hover::before {
+                        content: '';
+                        width: 100%;
+                        height: 3px;
+                        background-color: $footer-color;
+                        position: absolute;
+                        left: 0;
+                        bottom: -3px;
+                        animation: before-animation 0.5s ease-in-out;
+                    }
+
+                    &:hover {
+                        color: $footer-color;
+                        transition: color 0.5s ease-in-out;
+                    }
+
+                    @keyframes before-animation {
+                        0% {
+                            width: 0;
+                        }
+
+                        100% {
+                            width: 100%;
+                        }
+                    }
+
+                    &.active {
+                        color: $footer-color;
+
+                        &::before {
+                            content: '';
+                            width: 100%;
+                            height: 3px;
+                            background-color: $footer-color;
+                            position: absolute;
+                            left: 0;
+                            bottom: -3px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .action-wrapper {
+        @include flexRow;
+
+        .icon-container {
+            cursor: pointer;
+
+            .mat-icon {
+                color: $footer-color;
+                font-size: 26px;
+            }
+        }
+    }
+}

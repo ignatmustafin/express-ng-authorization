@@ -1,7 +1,6 @@
 @use '@angular/material' as mat;
 @include mat.core();
 
-
 $client-primary: mat.define-palette(mat.$indigo-palette);
 $client-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 $client-warn: mat.define-palette(mat.$red-palette);
@@ -41,30 +40,6 @@ $client-theme: mat.define-light-theme((
 }
 
 @font-face {
-    font-family: 'merriweather-regular';
-    font-weight: 400;
-    font-style: normal;
-    font-stretch: normal;
-    src: url('/assets/fonts/Merriweather/Merriweather-Regular.ttf') format('truetype');
-}
-
-@font-face {
-    font-family: 'merriweather-bold';
-    font-weight: 700;
-    font-style: normal;
-    font-stretch: normal;
-    src: url('/assets/fonts/Merriweather/Merriweather-Bold.ttf') format('truetype');
-}
-
-@font-face {
-    font-family: 'merriweather-black';
-    font-weight: 900;
-    font-style: normal;
-    font-stretch: normal;
-    src: url('/assets/fonts/Merriweather/Merriweather-Black.ttf') format('truetype');
-}
-
-@font-face {
     font-family: 'opensans-regular';
     font-weight: 400;
     font-style: normal;
@@ -94,6 +69,10 @@ $client-theme: mat.define-light-theme((
     font-style: normal;
     font-stretch: normal;
     src: url('/assets/fonts/OpenSans/OpenSans-Bold.ttf') format('truetype');
+}
+
+* {
+    box-sizing: border-box;
 }
 
 html,

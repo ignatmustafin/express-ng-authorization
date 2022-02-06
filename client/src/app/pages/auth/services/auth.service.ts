@@ -1,30 +1,44 @@
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { ILogIn, User } from './../../../shared/interfaces';
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {User} from "../../../shared/models/user.model";
+import {RestService} from "../../../core/services/rest.service";
+import {map} from "rxjs/operators";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AuthService {
 
-  private token = null;
+    private currentUserSubject: BehaviorSubject<User | null>;
+    public currentUser: Observable<User | null>;
 
-  constructor(private http: HttpClient) {
-    
-  }
+    constructor(
+        private http: RestService,
+    ) {
+        this.currentUserSubject = new BehaviorSubject(JSON.parse(<string>localStorage.getItem('quiz.user')));
+        this.currentUser = this.currentUserSubject.asObservable();
+    }
 
-  isAuthenticated() {
-    return true;
-  }
+    public get currentUserValue(): User | null {
+        return this.currentUserSubject.value;
+    }
 
-  login(user: User): Observable<ILogIn> {
-    return this.http.post<ILogIn>('/api/auth/signIn', user);
-  }
+    doSignIn(email: string, password: string) {
+        return this.http.post(`/auth/signIn`, {email, password})
+            .pipe(
+                map(response => {
+                    console.log(response)
+                    const token = response.data.accessToken;
+                    localStorage.setItem('quiz.user', JSON.stringify(response.data));
+                    this.currentUserSubject.next(response.data);
+                    console.log(this.currentUserSubject.value)
+                    return token;
+                })
+            );
+    }
 
-  getToken() {
-    
-  }
-
-  
+    doSignOut(): void {
+        localStorage.removeItem('quiz.user');
+        this.currentUserSubject.next(null);
+    }
 }

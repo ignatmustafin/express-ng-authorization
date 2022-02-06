@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
-import { AuthService } from '../../services/auth.service';
+import {AuthService} from '../../services/auth.service';
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-login',
@@ -13,38 +13,36 @@ export class LoginComponent implements OnInit {
     public form !: FormGroup;
 
     constructor(
-        private http: HttpClient,
         private formBuilder: FormBuilder,
-        private auth: AuthService
+        private auth: AuthService,
+        private router: Router
     ) {
     }
 
     ngOnInit(): void {
         this.form = this.formBuilder.group({
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(6)]]
+            email: ['vitaliyhappy94@gmail.com', [Validators.required, Validators.email]],
+            password: ['123456', [Validators.required, Validators.minLength(6)]]
         });
+
+        if (this.auth.currentUserValue) {
+            this.router.navigate(['/study-sets']);
+        }
     }
 
     submit() {
         if (this.form.valid) {
-            const body = {
-                email: this.form.controls['email'].value,
-                password: this.form.controls['password'].value
-            };
+            const email = this.form.controls['email'].value;
+            const password = this.form.controls['password'].value
 
-            this.auth.login(body).subscribe(() => console.log("login success"),
-            error => {console.warn(error);}
-            );
-
-            // this.http.post('http://localhost:3000/api/auth/signIn', body).subscribe({
-            //     next: response => {
-            //         console.log(response)
-            //     },
-            //     error: error => {
-            //         console.log(error)
-            //     }
-            // });
+            this.auth.doSignIn(email, password).subscribe({
+                error: error => {
+                    console.log(error)
+                },
+                complete: () => {
+                    this.router.navigate(['/study-sets']);
+                }
+            });
         }
     }
 

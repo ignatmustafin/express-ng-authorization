@@ -1,0 +1,9 @@
+@import "src/styles/main";
+
+.footer-container {
+    height: 80px;
+    padding: 30px;
+    background-color: $footer-color;
+
+    @include flexRow;
+}
