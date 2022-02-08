@@ -34,5 +34,17 @@ export default {
                 .isEmail().withMessage("wrong email"),
             check('password').isLength({min: 6}).withMessage("wrong password")
                 .not().matches(/[#$%^&\\/"'@ _]/g).withMessage("wrong password"),
+        ],
+    resetPasswordValidator: 
+        [
+            check('oldPassword')
+                .isLength({min: 6}).withMessage("wrong old password")
+                .not().matches(/[#$%^&\\/"'@ _]/g).withMessage("wrong old password"),
+            check('newPassword')
+                .isLength({min: 6}).withMessage("wrong new password")
+                .not().matches(/[#$%^&\\/"'@ _]/g).withMessage("wrong new password"),
+            check('passwordConfirmation')
+                .custom((value, {req}) => value === req.body.newPassword)
         ]
+    
 };

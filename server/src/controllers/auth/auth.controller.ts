@@ -33,7 +33,6 @@ export default class AuthController {
     async signInWithGoogle(req: express.Request, res: express.Response, next: express.NextFunction) {
         try {
             const userData = await authService.signInWithGoogle(req.body.code);
-            console.log('66666666666666666666666666666666666666666', userData)
             return res.status(201).json({success: true, data: userData});
         } catch (error) {
             next(error);
@@ -62,6 +61,17 @@ export default class AuthController {
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
 
             return res.status(201).json({success: true, data: userData});
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async resetPassword(req: express.Request, res: express.Response, next: express.NextFunction) {
+        try {
+            const {userId, oldPassword, newPassword} = req.body;
+            const userData = await authService.resetPassword(userId, oldPassword, newPassword);
+            
+            return res.status(200).json({success: true, data: userData});
         } catch (error) {
             next(error);
         }
