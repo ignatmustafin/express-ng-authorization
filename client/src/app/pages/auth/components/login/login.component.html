@@ -1,9 +1,9 @@
 <section class="login-section">
     <div class="login-container">
         <div class="body-wrapper">
-            <h2>Quiz Games</h2>
+            <h2>Title</h2>
 
-            <form class="form" [formGroup]="form" (ngSubmit)="submit()" autocomplete="off">
+            <form class="form" [formGroup]="form" (ngSubmit)="signIn()" autocomplete="off">
                 <div class="form-group">
                     <mat-form-field appearance="outline" hideRequiredMarker>
                         <mat-label>Email</mat-label>
@@ -42,6 +42,9 @@
             <div class="controls">
                 <button class="stroked-primary-btn" routerLink="/auth/registration" mat-stroked-button color="primary" type="submit">
                     Create new account
+                </button>
+                <button class="stroked-primary-btn" mat-stroked-button color="primary" type="submit" (click)="getGoogleLink()">
+                    Sign in with Google
                 </button>
             </div>
         </div>

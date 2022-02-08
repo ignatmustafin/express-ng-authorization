@@ -23,8 +23,20 @@ export class AuthService {
         return this.currentUserSubject.value;
     }
 
-    doSignIn(email: string, password: string) {
+    doSignIn(email: string, password: string): Observable<any> {
         return this.http.post(`/auth/signIn`, {email, password})
+            .pipe(
+                map(response => {
+                    localStorage.setItem('quiz.user', JSON.stringify(response.data));
+                    this.currentUserSubject.next(response.data);
+
+                    return response;
+                })
+            );
+    }
+
+    doSignInWithGoogle(code: string): Observable<any> {
+        return this.http.post('/auth/signInWithGoogle', {code})
             .pipe(
                 map(response => {
                     localStorage.setItem('quiz.user', JSON.stringify(response.data));

@@ -15,5 +15,12 @@
     "token": {
         "jwt": "pudge",
         "jwtRefresh": "mirana"
+    },
+    "googleService" : {
+        "token_url" : "https://oauth2.googleapis.com/token",
+        "userInfo_url" : "https://www.googleapis.com/oauth2/v2/userinfo",
+        "client_id" : "380404882965-44k7u4koidempquu0n30emtd266hk5qd.apps.googleusercontent.com",
+        "client_secret" : "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",
+        "redirect_uri" : "http://localhost:4200/auth/login"
     }
 }

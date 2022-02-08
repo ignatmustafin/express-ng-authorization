@@ -1,6 +1,6 @@
 import express from 'express';
 import ApiError from '../../services/error-service/api.errors';
-import userService from '../../services/auth/auth.service';
+import authService from '../../services/auth/auth.service';
 
 export default class AuthController {
 
@@ -8,7 +8,7 @@ export default class AuthController {
         try {
             const {firstName, lastName, email, password} = req.body;
 
-            const userData = await userService.registration(email, password, firstName, lastName) as any;
+            const userData = await authService.registration(email, password, firstName, lastName) as any;
 
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
             res.status(201).json({success: true, data: userData});
@@ -20,10 +20,20 @@ export default class AuthController {
     async signIn(req: express.Request, res: express.Response, next: express.NextFunction) {
         try {
             const {email, password} = req.body;
-            const userData = await userService.signIn(email, password);
+            const userData = await authService.signIn(email, password);
 
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
 
+            return res.status(201).json({success: true, data: userData});
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async signInWithGoogle(req: express.Request, res: express.Response, next: express.NextFunction) {
+        try {
+            const userData = await authService.signInWithGoogle(req.body.code);
+            console.log('66666666666666666666666666666666666666666', userData)
             return res.status(201).json({success: true, data: userData});
         } catch (error) {
             next(error);
@@ -36,7 +46,7 @@ export default class AuthController {
             if (!refreshToken) {
                 throw ApiError.BadRequest("not signed in");
             }
-            const token = await userService.signOut(refreshToken);
+            const token = await authService.signOut(refreshToken);
             res.clearCookie('refreshToken');
             return res.status(200).json({success: true, token});
         } catch (error) {
@@ -48,7 +58,7 @@ export default class AuthController {
         try {
             const {refreshToken} = req.cookies;
 
-            const userData = await userService.refresh(refreshToken);
+            const userData = await authService.refresh(refreshToken);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
 
             return res.status(201).json({success: true, data: userData});
