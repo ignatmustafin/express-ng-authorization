@@ -27,10 +27,23 @@ const User = sequelize.define(
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true,
+            validate: {
+                customValidator(value: any) {
+                  if (value === null && this.googleRegistration === false) {
+                    throw new Error("enter the password");
+                  }
+                }
+            }
+            
         },
         avatar: {
             type: DataTypes.STRING
+        },
+        googleRegistration: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            field: "google_registration"
         }
     }
 );

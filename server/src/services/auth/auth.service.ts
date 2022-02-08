@@ -5,20 +5,18 @@ import tokenService from '../token/token.service';
 import ApiError from '../error-service/api.errors';
 import axios from "axios";
 import config from "config";
+import axiosGoogleService from '../axios/axios-google.service';
 
 class AuthService {
     async registration(email: string, password: string, firstName: string, lastName: string) {
-        try {
-            const hashedPassword = await bcrypt.hash(password, 7);
-            const user: any = await User.create({firstName, lastName, email, password: hashedPassword});
-            const userDto = new UserDto(user);
+        const hashedPassword = await bcrypt.hash(password, 7);
+        const user: any = await User.create({firstName, lastName, email, password: hashedPassword});
+        const userDto = new UserDto(user);
 
-            const tokens = tokenService.generateToken({...userDto});
-            await tokenService.saveToken(userDto.id, tokens.refreshToken);
-            return {user: userDto, ...tokens};
-        } catch (error) {
-            throw error;
-        }
+        const tokens = tokenService.generateToken({...userDto});
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        return {user: userDto, ...tokens};
+       
     }
 
     async signIn(email: string, password: string) {
@@ -42,26 +40,11 @@ class AuthService {
     }
 
     async signInWithGoogle(code: string) {
-        const tokensData = await axios({
-            url: config.get('googleService.token_url'),
-            method: 'post',
-            data: {
-                client_id: config.get('googleService.client_id'),
-                client_secret: config.get('googleService.client_secret'),
-                redirect_uri: config.get('googleService.redirect_uri'),
-                grant_type: 'authorization_code',
-                code,
-            },
-        });
 
-        const userData = await axios({
-            url: config.get('googleService.userInfo_url'),
-            method: 'get',
-            headers: {
-                Authorization: `Bearer ${tokensData.data.access_token}`,
-            },
-        });
+        const tokensData: any = await axiosGoogleService.getToken(code);
 
+        const userData: any = await axiosGoogleService.getUserData(tokensData.data.access_token);
+        
         const user: any = await User.findOne({where: {email: userData.data.email}});
 
         if (!user) {
@@ -69,22 +52,23 @@ class AuthService {
                 firstName: userData.data.given_name,
                 lastName: userData.data.family_name,
                 email: userData.data.email,
-                password: '123456'
-            }
-            const hashedPassword = await bcrypt.hash(newUser.password, 7);
-            const user: any = await User.create({...newUser, password: hashedPassword});
-            await new UserDto(user);
+                googleRegistration: true
+            };
+            const user: any = await User.create({...newUser});
+            const userDto = new UserDto(user);
+
+            const tokens = tokenService.generateToken({...userDto});
+            await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+            return {...userDto, ...tokens};
         }
 
-        const newUser: any = await User.findOne({where: {email: userData.data.email}});
-        const createdUser = await new UserDto(newUser);
-        const tokens = tokenService.generateToken({...createdUser});
+        const userDto = new UserDto(user);
 
+        const tokens = tokenService.generateToken({...userDto});
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
-        console.log('777777777777777777777777777777777777', tokens, createdUser)
-        await tokenService.saveToken(createdUser.id, tokens.refreshToken);
-        console.log('88888888888888888888888888888888888', tokens, createdUser)
-        return {...createdUser, ...tokens};
+        return {...userDto, ...tokens};
     }
 
     /**
@@ -122,6 +106,22 @@ class AuthService {
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
         return {user: userDto, ...tokens};
+    }
+
+    async resetPassword(userId: number, oldPassword: string, newPassword: string) {
+        const user: any = await User.findByPk(userId);
+        const checkOldPassword = await bcrypt.compare(oldPassword, user.password);
+        
+        if (!checkOldPassword) {
+            throw ApiError.BadRequest("old password not valid");
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 7);
+
+        const createNewPassword = await User.update({password: hashedPassword}, {where: {id: user.id}, returning: true});
+        const updatedUser = createNewPassword[1].map((users: any) => users.dataValues);
+        const userDto = new UserDto(updatedUser[0]);
+        return userDto;
     }
 }
 

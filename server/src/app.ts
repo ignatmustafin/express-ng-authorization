@@ -13,7 +13,10 @@ const PORT = config.get("Server.PORT") || 3000;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    origin: config.get("Server.clientURL")
+}));
 
 app.use("/api", mainRouter);
 app.use(errorMiddleware);
@@ -28,6 +31,6 @@ const connectToDbBeforeServerStarted = async () => {
     } catch (error) {
         return error;
     }
-}
+};
 
 connectToDbBeforeServerStarted();
