@@ -1,8 +1,7 @@
 import config from 'config';
 import axios from 'axios';
 
-
-class AxiosGoogleConfig {
+class GoogleService {
     googleService: any = config.get("googleService");
 
     async getToken (code: string) {
@@ -17,7 +16,7 @@ class AxiosGoogleConfig {
                 code
             }
         };
-        return await axios(config);
+        return axios(config);
     }
 
     async getUserData(accessToken: string) {
@@ -28,8 +27,8 @@ class AxiosGoogleConfig {
                 Authorization: `Bearer ${accessToken}`
             }
         };
-        return await axios(config);
+        return axios(config);
     } 
 }
 
-export default new AxiosGoogleConfig();
+export default new GoogleService();

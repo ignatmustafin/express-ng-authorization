@@ -3,9 +3,7 @@ import UserDto from '../user/user.dto';
 import User from '../../models/user.model';
 import tokenService from '../token/token.service';
 import ApiError from '../error-service/api.errors';
-import axios from "axios";
-import config from "config";
-import axiosGoogleService from '../axios/axios-google.service';
+import GoogleService from '../axios/google.service';
 
 class AuthService {
     async registration(email: string, password: string, firstName: string, lastName: string) {
@@ -41,9 +39,9 @@ class AuthService {
 
     async signInWithGoogle(code: string) {
 
-        const tokensData: any = await axiosGoogleService.getToken(code);
+        const tokensData: any = await GoogleService.getToken(code);
 
-        const userData: any = await axiosGoogleService.getUserData(tokensData.data.access_token);
+        const userData: any = await GoogleService.getUserData(tokensData.data.access_token);
         
         const user: any = await User.findOne({where: {email: userData.data.email}});
 
@@ -120,8 +118,7 @@ class AuthService {
 
         const createNewPassword = await User.update({password: hashedPassword}, {where: {id: user.id}, returning: true});
         const updatedUser = createNewPassword[1].map((users: any) => users.dataValues);
-        const userDto = new UserDto(updatedUser[0]);
-        return userDto;
+        return new UserDto(updatedUser[0]);
     }
 }
 

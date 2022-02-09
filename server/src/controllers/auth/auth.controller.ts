@@ -40,11 +40,12 @@ export default class AuthController {
     }
 
     async signOut(req: express.Request, res: express.Response, next: express.NextFunction) {
+        const {refreshToken} = req.cookies;
+        if (!refreshToken) {
+            throw ApiError.BadRequest("not signed in");
+        }
+
         try {
-            const {refreshToken} = req.cookies;
-            if (!refreshToken) {
-                throw ApiError.BadRequest("not signed in");
-            }
             const token = await authService.signOut(refreshToken);
             res.clearCookie('refreshToken');
             return res.status(200).json({success: true, token});
@@ -70,7 +71,7 @@ export default class AuthController {
         try {
             const {userId, oldPassword, newPassword} = req.body;
             const userData = await authService.resetPassword(userId, oldPassword, newPassword);
-            
+
             return res.status(200).json({success: true, data: userData});
         } catch (error) {
             next(error);

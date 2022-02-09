@@ -58,6 +58,10 @@ input:-webkit-autofill:active {
 }
 
 ::ng-deep .mat-form-field {
+    .mat-form-field-wrapper, {
+        margin: 0 !important;
+    }
+
     .mat-input-element {
         color: $text-black;
     }

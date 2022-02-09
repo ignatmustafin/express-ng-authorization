@@ -35,16 +35,26 @@
                 <a routerLink="/auth/reset-password">Forgot your password?</a>
 
                 <button class="flat-primary-btn" mat-flat-button color="primary" type="submit">
-                    Log In
+                    Sign In
                 </button>
             </form>
 
             <div class="controls">
-                <button class="stroked-primary-btn" routerLink="/auth/registration" mat-stroked-button color="primary" type="submit">
+                <button class="stroked-primary-btn create-button" routerLink="/auth/registration"
+                    mat-stroked-button color="primary" type="submit">
                     Create new account
                 </button>
-                <button class="stroked-primary-btn" mat-stroked-button color="primary" type="submit" (click)="getGoogleLink()">
-                    Sign in with Google
+
+                <button class="stroked-primary-btn google-button" type="submit"
+                        mat-stroked-button color="primary" (click)="getGoogleLink()">
+                    <img width="28" height="28" src="assets/images/logo/google.svg" alt="google sign in"/>
+                    Sign In with Google
+                </button>
+
+                <button class="stroked-primary-btn facebook-button" type="submit"
+                        mat-stroked-button color="primary" (click)="getGoogleLink()">
+                    <img width="26" height="26" src="assets/images/logo/facebook.svg" alt="facebook sign in"/>
+                    Sign In with Facebook
                 </button>
             </div>
         </div>
