@@ -10,7 +10,8 @@ router.post('/registration', authValidation(validations.registrationValidators),
 router.post('/reset-password');
 router.post('/signIn', authValidation(validations.signInValidation), auth.signIn);
 router.post('/signInWithGoogle', auth.signInWithGoogle);
-router.post('/refreshToken', auth.tokenRefresh);
+router.post('/signInWithFacebook', auth.signInWithFacebook);
+router.post('/refreshToken', auth.refreshToken);
 router.put('/resetPassword', authValidation(validations.resetPasswordValidator), auth.resetPassword);
 router.delete('/signOut', auth.signOut);
 

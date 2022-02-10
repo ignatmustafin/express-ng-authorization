@@ -10,7 +10,7 @@ export default class AuthController {
 
             const userData = await authService.registration(email, password, firstName, lastName) as any;
 
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
+            /*res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});*/
             res.status(201).json({success: true, data: userData});
         } catch (error) {
             next(error);
@@ -39,6 +39,15 @@ export default class AuthController {
         }
     }
 
+    async signInWithFacebook(req: express.Request, res: express.Response, next: express.NextFunction) {
+        try {
+            const userData = await authService.signInWithFacebook(req.body.code);
+            return res.status(201).json({success: true, data: userData});
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async signOut(req: express.Request, res: express.Response, next: express.NextFunction) {
         const {refreshToken} = req.cookies;
         if (!refreshToken) {
@@ -54,7 +63,7 @@ export default class AuthController {
         }
     }
 
-    async tokenRefresh(req: express.Request, res: express.Response, next: express.NextFunction) {
+    async refreshToken(req: express.Request, res: express.Response, next: express.NextFunction) {
         try {
             const {refreshToken} = req.cookies;
 

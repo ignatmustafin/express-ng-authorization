@@ -4,6 +4,7 @@ import User from '../../models/user.model';
 import tokenService from '../token/token.service';
 import ApiError from '../error-service/api.errors';
 import GoogleService from '../axios/google.service';
+import FacebookService from "../axios/facebook.service";
 
 class AuthService {
     async registration(email: string, password: string, firstName: string, lastName: string) {
@@ -38,11 +39,8 @@ class AuthService {
     }
 
     async signInWithGoogle(code: string) {
-
         const tokensData: any = await GoogleService.getToken(code);
-
         const userData: any = await GoogleService.getUserData(tokensData.data.access_token);
-        
         const user: any = await User.findOne({where: {email: userData.data.email}});
 
         if (!user) {
@@ -52,6 +50,37 @@ class AuthService {
                 email: userData.data.email,
                 googleRegistration: true
             };
+
+            const user: any = await User.create({...newUser});
+            const userDto = new UserDto(user);
+
+            const tokens = tokenService.generateToken({...userDto});
+            await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+            return {...userDto, ...tokens};
+        }
+
+        const userDto = new UserDto(user);
+
+        const tokens = tokenService.generateToken({...userDto});
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+        return {...userDto, ...tokens};
+    }
+
+    async signInWithFacebook(code: string) {
+        const tokensData: any = await FacebookService.getToken(code);
+        const userData: any = await FacebookService.getUserData(tokensData.data.access_token);
+        const user: any = await User.findOne({where: {email: userData.data.email}});
+
+        if (!user) {
+            const newUser = {
+                firstName: userData.data.first_name,
+                lastName: userData.data.last_name,
+                email: userData.data.email,
+                googleRegistration: true
+            };
+
             const user: any = await User.create({...newUser});
             const userDto = new UserDto(user);
 
@@ -75,6 +104,7 @@ class AuthService {
      */
     async signOut(refreshToken: string) {
         const token = await tokenService.removeToken(refreshToken);
+
         if (token) {
             return token;
         }
@@ -90,6 +120,7 @@ class AuthService {
         if (!refreshToken) {
             throw ApiError.UnauthorizedError();
         }
+
         const userData: any = tokenService.validateRefreshToken(refreshToken);
         const tokenFromDb = await tokenService.findTokenInDb(refreshToken);
 
@@ -99,8 +130,8 @@ class AuthService {
 
         const user = await User.findByPk(userData.id);
         const userDto = new UserDto(user);
-        const tokens = tokenService.generateToken({...userDto});
 
+        const tokens = tokenService.generateToken({...userDto});
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
         return {user: userDto, ...tokens};
@@ -115,8 +146,8 @@ class AuthService {
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 7);
-
         const createNewPassword = await User.update({password: hashedPassword}, {where: {id: user.id}, returning: true});
+
         const updatedUser = createNewPassword[1].map((users: any) => users.dataValues);
         return new UserDto(updatedUser[0]);
     }

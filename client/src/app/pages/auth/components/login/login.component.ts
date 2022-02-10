@@ -39,10 +39,14 @@ export class LoginComponent implements OnInit {
     private getInfoAboutUrl() {
         const urlParams = queryString.parse(window.location.search);
 
-        console.log(urlParams)
         if (Object.keys(urlParams).length) {
             const code = <string>urlParams['code'];
-            this.doSignInWithGoogle(code);
+
+            if (urlParams['scope']) {
+                this.doSignInWithGoogle(code);
+            } else {
+                this.doSignInWithFacebook(code);
+            }
         }
     }
 
@@ -65,10 +69,21 @@ export class LoginComponent implements OnInit {
     doSignInWithGoogle(code: string): void {
         this.auth.doSignInWithGoogle(code).subscribe({
             next: response => {
-
+                this.router.navigate(['/study-sets']);
             },
             error: error => {
+
+            }
+        });
+    }
+
+    doSignInWithFacebook(code: string): void {
+        this.auth.doSignInWithFacebook(code).subscribe({
+            next: response => {
                 this.router.navigate(['/study-sets']);
+            },
+            error: error => {
+
             }
         });
     }
@@ -88,6 +103,21 @@ export class LoginComponent implements OnInit {
 
         const link = document.createElement('a');
         link.href = `${environment.google.google_auth_url}?${stringParamsForGoogle}`;
+        link.click();
+    }
+
+    getFacebookLink(): void {
+        const stringParamsForFacebook = queryString.stringify({
+            client_id: environment.facebook.facebook_client_id,
+            redirect_uri: environment.facebook.facebook_redirect_url,
+            scope: ['email', 'user_friends'].join(','),
+            response_type: 'code',
+            auth_type: 'rerequest',
+            display: 'popup',
+        });
+
+        const link = document.createElement('a');
+        link.href = `${environment.facebook.facebook_auth_url}?${stringParamsForFacebook}`;
         link.click();
     }
 

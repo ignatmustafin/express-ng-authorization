@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
     selector: 'app-registration',
@@ -11,8 +12,9 @@ export class RegistrationComponent implements OnInit {
     public form !: FormGroup;
 
     constructor(
-        private http: HttpClient,
-        private formBuilder: FormBuilder
+        private authService: AuthService,
+        private formBuilder: FormBuilder,
+        private router: Router
     ) {
     }
 
@@ -26,9 +28,9 @@ export class RegistrationComponent implements OnInit {
         });
     }
 
-    submit() {
+    doRegistration() {
         if (this.form.valid) {
-            const body = {
+            const user = {
                 email: this.form.controls['email'].value,
                 password: this.form.controls['password'].value,
                 firstName: this.form.controls['firstName'].value,
@@ -36,12 +38,12 @@ export class RegistrationComponent implements OnInit {
                 passwordConfirmation: this.form.controls['confirmPassword'].value
             };
 
-            this.http.post('/api/auth/registration', body).subscribe({
-                next: response => {
-                    console.log(response);
-                },
+            this.authService.doRegistration(user).subscribe({
                 error: error => {
-                    console.log(error);
+                    console.log(error)
+                },
+                complete: () => {
+                    this.router.navigate(['/auth/login']);
                 }
             });
         }

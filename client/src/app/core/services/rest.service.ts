@@ -32,9 +32,9 @@ export class RestService {
             );
     }
 
-    public post(path: string, body: object = {}): Observable<any> {
+    public post(path: string, body: object = {}, options: object = {}): Observable<any> {
         return this.httpClient
-            .post(this.apiUrl + path, JSON.stringify(body), this.options)
+            .post(this.apiUrl + path, JSON.stringify(body), {...options, ...this.options})
             .pipe(
                 catchError(this.formatErrors)
             );

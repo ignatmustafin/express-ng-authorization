@@ -23,5 +23,12 @@
         "client_id": "420466401957-pufrq5pcbmffhk9otepn95gardvj8kgb.apps.googleusercontent.com",
         "client_secret": "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",
         "redirect_uri": "http://localhost:4200/auth/login"
+    },
+    "facebookService": {
+        "token_url": "https://graph.facebook.com/v4.0/oauth/access_token",
+        "userInfo_url": "https://graph.facebook.com/me",
+        "client_id": "462840802180153",
+        "client_secret": "f1ca4a0c197549a1eb245d322a217dd7",
+        "redirect_uri": "http://localhost:4200/auth/login"
     }
 }
