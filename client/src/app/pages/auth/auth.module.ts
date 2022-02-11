@@ -6,10 +6,12 @@ import {SharedModule} from "../../shared/shared.module";
 import {LoginComponent} from './components/login/login.component';
 import {RegistrationComponent} from './components/registration/registration.component';
 import {ResetPasswordComponent} from './components/reset-password/reset-password.component';
+import {AccountVerificationComponent} from './components/account-verification/account-verification.component';
 
 const routes: Routes = [
     {path: 'login', component: LoginComponent},
     {path: 'registration', component: RegistrationComponent},
+    {path: 'account-verification', component: AccountVerificationComponent},
     {path: 'reset-password', component: ResetPasswordComponent},
 ]
 
@@ -17,7 +19,8 @@ const routes: Routes = [
     declarations: [
         LoginComponent,
         RegistrationComponent,
-        ResetPasswordComponent
+        ResetPasswordComponent,
+        AccountVerificationComponent
     ],
     imports: [
         CommonModule,

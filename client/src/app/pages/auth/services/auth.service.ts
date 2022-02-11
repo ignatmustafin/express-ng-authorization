@@ -60,9 +60,15 @@ export class AuthService {
             );
     }
 
-    doSignOut(): void {
-        this.stopRefreshTokenTimer();
-        this.currentUserSubject.next(null);
+    doSignOut(): Observable<any> {
+        return this.http.post('/auth/signIn', {}, {withCredentials: true})
+            .pipe(
+                map(response => {
+                    this.stopRefreshTokenTimer();
+                    this.currentUserSubject.next(null);
+                    return response;
+                })
+            )
     }
 
     refreshToken() {
