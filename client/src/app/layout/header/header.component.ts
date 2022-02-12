@@ -23,7 +23,11 @@ export class HeaderComponent implements OnInit {
     }
 
     doSignOut() {
-        this.authService.doSignOut();
-        this.router.navigate(['/auth/login']);
+        this.authService.doSignOut().subscribe({
+            next: () => {
+                localStorage.removeItem('confirm');
+                this.router.navigate(['/auth/login']);
+            }
+        });
     }
 }

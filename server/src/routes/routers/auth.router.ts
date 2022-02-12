@@ -7,12 +7,15 @@ const router = Router();
 const auth = new AuthController();
 
 router.post('/registration', authValidation(validations.registrationValidators), auth.registration);
-router.post('/reset-password');
+
 router.post('/signIn', authValidation(validations.signInValidation), auth.signIn);
 router.post('/signInWithGoogle', auth.signInWithGoogle);
 router.post('/signInWithFacebook', auth.signInWithFacebook);
-router.post('/refreshToken', auth.refreshToken);
+
+router.post('/getResetLink', auth.getResetPasswordLink);
 router.put('/resetPassword', authValidation(validations.resetPasswordValidator), auth.resetPassword);
-router.delete('/signOut', auth.signOut);
+
+router.post('/signOut', auth.signOut);
+router.post('/refreshToken', auth.refreshToken);
 
 export default router;

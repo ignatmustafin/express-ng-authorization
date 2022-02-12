@@ -15,20 +15,19 @@ class AuthService {
         const tokens = tokenService.generateToken({...userDto});
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
         return {user: userDto, ...tokens};
-       
     }
 
     async signIn(email: string, password: string) {
         const user: any = await User.findOne({where: {email}});
 
         if (!user) {
-            throw ApiError.BadRequest("Wrong email or password");
+            throw ApiError.BadRequest("Incorrect email or password");
         }
 
         const validPassword = await bcrypt.compare(password, user.password);
 
         if (!validPassword) {
-            throw ApiError.BadRequest("Email or password not valid");
+            throw ApiError.BadRequest("Incorrect email or password");
         }
 
         const userDto = new UserDto(user);
@@ -98,10 +97,6 @@ class AuthService {
         return {...userDto, ...tokens};
     }
 
-    /**
-     * TODO
-     * @param refreshToken
-     */
     async signOut(refreshToken: string) {
         const token = await tokenService.removeToken(refreshToken);
 
@@ -112,10 +107,6 @@ class AuthService {
         throw ApiError.BadRequest("not signed in");
     }
 
-    /**
-     * TODO
-     * @param refreshToken
-     */
     async refresh(refreshToken: string) {
         if (!refreshToken) {
             throw ApiError.UnauthorizedError();
@@ -137,12 +128,22 @@ class AuthService {
         return {user: userDto, ...tokens};
     }
 
+    async getResetPasswordLink(userEmail: string) {
+        const user: any = await User.findOne({where: {email: userEmail}});
+
+        if (!user) {
+            throw ApiError.BadRequest("There is no user with this email");
+        }
+
+        return true;
+    }
+
     async resetPassword(userId: number, oldPassword: string, newPassword: string) {
         const user: any = await User.findByPk(userId);
         const checkOldPassword = await bcrypt.compare(oldPassword, user.password);
         
         if (!checkOldPassword) {
-            throw ApiError.BadRequest("old password not valid");
+            throw ApiError.BadRequest("Old password not valid");
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 7);

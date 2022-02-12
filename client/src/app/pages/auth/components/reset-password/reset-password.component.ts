@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
     selector: 'app-reset-password',
@@ -11,10 +11,15 @@ export class ResetPasswordComponent implements OnInit {
 
     public formResetPassword !: FormGroup;
     public formSetNewPassword !: FormGroup;
-    public showNewPassword: boolean = true;
+    public resetPassword: boolean = false;
+
+    public userEmail: string = '';
+    public confirmedEmail: boolean = false;
+
+    public errorWithEmail: string = '';
 
     constructor(
-        private http: HttpClient,
+        private authService: AuthService,
         private formBuilder: FormBuilder
     ) {
     }
@@ -30,41 +35,36 @@ export class ResetPasswordComponent implements OnInit {
         });
     }
 
-    submitResetPassword() {
+    getResetPasswordLink() {
         if (this.formResetPassword.valid) {
-            const body = {
-                email: this.formResetPassword.controls['email'].value,
-            }
+            const userEmail = this.formResetPassword.controls['email'].value;
 
-            this.http.post('http://localhost:3000/api/auth/signIn', body).subscribe({
-                next: response => {
-                    console.log(response)
+            this.authService.getResetPasswordLink(userEmail).subscribe({
+                next: () => {
+                    this.userEmail = userEmail;
+                    this.confirmedEmail = true;
                 },
                 error: error => {
-                    console.log(error)
+                    this.errorWithEmail = error.message;
                 }
             });
         }
     }
 
-    submitSetNewPassword() {
+    setNewPassword() {
         if (this.formSetNewPassword.valid) {
-            const body = {
-                email: this.formSetNewPassword.controls['email'].value,
-            }
+            this.authService.doResetPassword('123123').subscribe({
+                next: () => {
 
-            this.http.post('http://localhost:3000/api/auth/signIn', body).subscribe({
-                next: response => {
-                    console.log(response)
                 },
                 error: error => {
-                    console.log(error)
+                    console.log(error);
                 }
             });
         }
     }
 
-    public errorHandling = (control: string, error: string, form: FormGroup) => {
+    errorHandling = (control: string, error: string, form: FormGroup) => {
         if (control === 'confirmPassword') {
             const password = this.formSetNewPassword.controls['confirmPassword'];
             const isValid = this.formSetNewPassword.controls['password'].value !== this.formSetNewPassword.controls['confirmPassword'].value;
@@ -79,7 +79,7 @@ export class ResetPasswordComponent implements OnInit {
         return form.controls[control].hasError(error);
     }
 
-    public checkChange(control: string, form: FormGroup) {
+    checkChange(control: string, form: FormGroup) {
         const field = form.controls[control];
 
         if (!field.value) {

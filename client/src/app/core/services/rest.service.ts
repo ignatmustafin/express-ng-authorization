@@ -9,7 +9,9 @@ import {environment} from "../../../environments/environment";
 })
 export class RestService {
     private apiUrl = environment.apiUrl;
-    private options = {headers: new HttpHeaders().set('Content-Type', 'application/json')};
+    private options = {
+        headers: new HttpHeaders().set('Content-Type', 'application/json')
+    };
 
     constructor(
         private httpClient: HttpClient
@@ -33,8 +35,10 @@ export class RestService {
     }
 
     public post(path: string, body: object = {}, options: object = {}): Observable<any> {
+        this.options = {...this.options, ...options};
+
         return this.httpClient
-            .post(this.apiUrl + path, JSON.stringify(body), {...options, ...this.options})
+            .post(this.apiUrl + path, JSON.stringify(body), {...this.options})
             .pipe(
                 catchError(this.formatErrors)
             );

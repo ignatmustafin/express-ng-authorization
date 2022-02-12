@@ -7,7 +7,9 @@ import {AuthService} from "../../pages/auth/services/auth.service";
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-    constructor(private authService: AuthService) {
+    constructor(
+        private authService: AuthService
+    ) {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -18,8 +20,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                         this.authService.doSignOut();
                     }
 
-                    const errorMessage = error.error.message || error.statusText;
-                    return throwError(errorMessage);
+                    return throwError(error);
                 })
             );
     }

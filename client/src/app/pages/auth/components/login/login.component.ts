@@ -15,6 +15,7 @@ import {AuthService} from '../../services/auth.service';
 export class LoginComponent implements OnInit {
 
     public form !: FormGroup;
+    public errorWithSignIn: string = '';
 
     constructor(
         private formBuilder: FormBuilder,
@@ -25,7 +26,7 @@ export class LoginComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.formBuilder.group({
-            email: ['vitaliyhappy94@gmail.com', [Validators.required, Validators.email]],
+            email: ['vitaliy@test.com', [Validators.required, Validators.email]],
             password: ['123456', [Validators.required, Validators.minLength(6)]]
         });
 
@@ -56,11 +57,12 @@ export class LoginComponent implements OnInit {
             const password = this.form.controls['password'].value;
 
             this.auth.doSignIn(email, password).subscribe({
-                error: error => {
-                    console.log(error)
-                },
-                complete: () => {
+                next : () => {
+                    localStorage.setItem('confirm', JSON.stringify(true));
                     this.router.navigate(['/study-sets']);
+                },
+                error: error => {
+                    this.errorWithSignIn = error.message;
                 }
             });
         }
@@ -68,22 +70,24 @@ export class LoginComponent implements OnInit {
 
     doSignInWithGoogle(code: string): void {
         this.auth.doSignInWithGoogle(code).subscribe({
-            next: response => {
+            next: () => {
+                localStorage.setItem('confirm', JSON.stringify(true));
                 this.router.navigate(['/study-sets']);
             },
             error: error => {
-
+                console.log(error);
             }
         });
     }
 
     doSignInWithFacebook(code: string): void {
         this.auth.doSignInWithFacebook(code).subscribe({
-            next: response => {
+            next: () => {
+                localStorage.setItem('confirm', JSON.stringify(true));
                 this.router.navigate(['/study-sets']);
             },
             error: error => {
-
+                console.log(error);
             }
         });
     }

@@ -1,3 +1,20 @@
 <section class="account-verification">
-    We have sent an email to confirm your email. Please go to your mailbox and complete the registration
+    <div *ngIf="!isVerified" class="before-confirm-container">
+        <p class="account-message">
+            We have sent an email with a confirmation link to your email address <b>{{userEmail}}</b>. In order to
+            complete the sign-up process, please click the confirmation link.
+        </p>
+        <p class="account-message">
+            If you do not receive a confirmation email, please check your spam folder. Also, please verify that you
+            entered a valid email address in our sign-up form.
+        </p>
+    </div>
+
+    <div *ngIf="isVerified" class="after-confirm-container">
+        <p class="account-message">
+            Your email has been verified and you will be redirected to the login page in
+            <b>{{countDownTime}}</b>
+            seconds.
+        </p>
+    </div>
 </section>

@@ -1,9 +1,11 @@
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
+
+import {appInitializer} from "./helpers/app-initializer";
 import {TokenInterceptor} from "./interceptors/token.interceptor";
 import {ErrorInterceptor} from "./interceptors/errors.interceptor";
-import {appInitializer} from "./helpers/app-initializer";
+
 import {AuthService} from "../pages/auth/services/auth.service";
 
 @NgModule({

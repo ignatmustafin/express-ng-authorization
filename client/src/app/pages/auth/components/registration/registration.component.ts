@@ -29,7 +29,7 @@ export class RegistrationComponent implements OnInit {
     }
 
     doRegistration() {
-        /*if (this.form.valid) {
+        if (this.form.valid) {
             const user = {
                 email: this.form.controls['email'].value,
                 password: this.form.controls['password'].value,
@@ -39,15 +39,16 @@ export class RegistrationComponent implements OnInit {
             };
 
             this.authService.doRegistration(user).subscribe({
+                next: () => {
+                    localStorage.setItem('confirm.email', JSON.stringify(user.email));
+                    this.router.navigate(['/auth/account-verification'], {queryParams: {isVerified: false}});
+                },
                 error: error => {
                     console.log(error)
-                },
-                complete: () => {
-                    this.router.navigate(['/auth/account-verification'], {queryParams: {isVerified: false}});
                 }
             });
-        }*/
-        this.router.navigate(['/auth/account-verification'], {queryParams: {isVerified: false}});
+        }
+
     }
 
     errorHandling = (control: string, error: string) => {

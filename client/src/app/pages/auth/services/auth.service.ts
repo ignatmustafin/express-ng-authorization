@@ -9,6 +9,7 @@ import {map} from "rxjs/operators";
 })
 export class AuthService {
 
+    private refreshTokenTimeout!: number;
     private currentUserSubject: BehaviorSubject<User | null>;
     public currentUser: Observable<User | null>;
 
@@ -19,12 +20,12 @@ export class AuthService {
         this.currentUser = this.currentUserSubject.asObservable();
     }
 
-    public get currentUserValue(): User | null {
+    get currentUserValue(): User | null {
         return this.currentUserSubject.value;
     }
 
-    doRegistration(user: any) {
-        return this.http.post(`/api/auth/registration`, {user});
+    doRegistration(user: any): Observable<any> {
+        return this.http.post(`/auth/registration`, {...user});
     }
 
     doSignIn(email: string, password: string): Observable<any> {
@@ -61,14 +62,22 @@ export class AuthService {
     }
 
     doSignOut(): Observable<any> {
-        return this.http.post('/auth/signIn', {}, {withCredentials: true})
+        return this.http.post('/auth/signOut', {}, {withCredentials: true})
             .pipe(
                 map(response => {
                     this.stopRefreshTokenTimer();
                     this.currentUserSubject.next(null);
                     return response;
                 })
-            )
+            );
+    }
+
+    getResetPasswordLink(email: string) : Observable<any> {
+        return this.http.post('/auth/getResetLink', {email: email});
+    }
+
+    doResetPassword(code: string): Observable<any> {
+        return this.http.post('/auth/resetPassword', {code: code});
     }
 
     refreshToken() {
@@ -79,16 +88,12 @@ export class AuthService {
                     this.startRefreshTokenTimer();
                     return response;
                 })
-            )
+            );
     }
 
-    private refreshTokenTimeout: any;
-
     private startRefreshTokenTimer() {
-        const jwtToken = JSON.parse(atob(this.currentUserValue!.accessToken.split('.')[1]));
-        console.log(jwtToken)
-        const expires = new Date(jwtToken.exp * 1000);
-        console.log(expires)
+        const accessToken = JSON.parse(atob(this.currentUserValue!.accessToken.split('.')[1]));
+        const expires = new Date(accessToken.exp * 1000);
         const timeout = expires.getTime() - Date.now() - (60 * 1000);
         this.refreshTokenTimeout = setTimeout(() => this.refreshToken().subscribe(), timeout);
     }

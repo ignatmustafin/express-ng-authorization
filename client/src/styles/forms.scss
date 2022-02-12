@@ -4,6 +4,17 @@
 .form {
     @include flexCol;
 
+    position: relative;
+
+    .form-errors {
+        font-size: 12px;
+        color: $error-color;
+
+        position: absolute;
+        left: 0;
+        bottom: 50px;
+    }
+
     .form-group {
         margin-top: 10px;
         font-size: 14px;

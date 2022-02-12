@@ -1,5 +1,4 @@
 import express from 'express';
-import ApiError from '../../services/error-service/api.errors';
 import authService from '../../services/auth/auth.service';
 
 export default class AuthController {
@@ -7,10 +6,8 @@ export default class AuthController {
     async registration(req: express.Request, res: express.Response, next: express.NextFunction) {
         try {
             const {firstName, lastName, email, password} = req.body;
-
             const userData = await authService.registration(email, password, firstName, lastName) as any;
 
-            /*res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});*/
             res.status(201).json({success: true, data: userData});
         } catch (error) {
             next(error);
@@ -49,12 +46,8 @@ export default class AuthController {
     }
 
     async signOut(req: express.Request, res: express.Response, next: express.NextFunction) {
-        const {refreshToken} = req.cookies;
-        if (!refreshToken) {
-            throw ApiError.BadRequest("not signed in");
-        }
-
         try {
+            const {refreshToken} = req.cookies;
             const token = await authService.signOut(refreshToken);
             res.clearCookie('refreshToken');
             return res.status(200).json({success: true, token});
@@ -66,11 +59,21 @@ export default class AuthController {
     async refreshToken(req: express.Request, res: express.Response, next: express.NextFunction) {
         try {
             const {refreshToken} = req.cookies;
-
             const userData = await authService.refresh(refreshToken);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
 
             return res.status(201).json({success: true, data: userData});
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getResetPasswordLink(req: express.Request, res: express.Response, next: express.NextFunction) {
+        try {
+            const {email} = req.body;
+            await authService.getResetPasswordLink(email);
+
+            return res.status(200).json({success: true});
         } catch (error) {
             next(error);
         }
