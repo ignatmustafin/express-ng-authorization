@@ -9,10 +9,10 @@ import {ResetPasswordComponent} from './components/reset-password/reset-password
 import {AccountVerificationComponent} from './components/account-verification/account-verification.component';
 
 const routes: Routes = [
-    {path: 'login', component: LoginComponent},
-    {path: 'registration', component: RegistrationComponent},
-    {path: 'account-verification', component: AccountVerificationComponent},
-    {path: 'reset-password', component: ResetPasswordComponent},
+    {path: 'login', component: LoginComponent, data: {state: 'login'}},
+    {path: 'registration', component: RegistrationComponent, data: {state: 'registration'}},
+    {path: 'account-verification', component: AccountVerificationComponent, data: {state: 'accountVerification'}},
+    {path: 'reset-password', component: ResetPasswordComponent, data: {state: 'resetPassword'}},
 ]
 
 @NgModule({
