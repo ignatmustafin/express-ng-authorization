@@ -17,7 +17,7 @@ class AuthService {
         const userDto = new UserDto(user);
 
         const activationLink = uuidv4();
-        const uniqueLink = `${config.get("clientUrl.activationRedirect")}?link=${activationLink}`;
+        const uniqueLink = `${config.get("clientUrl.activationRedirect")}&link=${activationLink}`;
         const saveActivationLink = await Activations.create({
             activationLink,
             user_id: userDto.id
