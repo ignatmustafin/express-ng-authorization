@@ -19,3 +19,8 @@
   line-height: $lineHeight;
   color: $color;
 }
+
+@mixin backgroundGradient {
+    background: rgb(0,0,0);
+    background: linear-gradient(135deg, rgba(#F9FAFC, 1) 50%, rgba(#32bdbd, 1) 100%);
+}

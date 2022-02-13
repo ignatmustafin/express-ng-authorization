@@ -1,26 +1,20 @@
 @import "src/styles/main";
 
 .login-section {
-    height: 100%;
+    min-height: 100%;
 
-    @include flexRow;
+    @include backgroundGradient;
+    @include flexCol;
     justify-content: center;
-    align-items: flex-start;
-
-    background-image: url("/assets/images/background/2.jpg");
-
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
 
     .login-container {
         position: relative;
-        top: 50%;
-        transform: translateY(-50%);
+        z-index: 10;
 
         h2 {
-            @include setFont(golos-bold, 700, 26px, 30px, $text-black);
             margin-bottom: 25px;
+
+            @include setFont(golos-bold, 700, 26px, 30px, $text-black);
             text-align: center;
         }
 
@@ -66,5 +60,19 @@
                 }
             }
         }
+    }
+
+    .image-one {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        z-index: 1;
+    }
+
+    .image-two {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
     }
 }
