@@ -39,7 +39,7 @@
     "mailConfig": {
         "SMTP_HOST": "smtp.gmail.com",
         "SMTP_PORT": 587,
-        "SMTP_USER": "ignatmustafin77@gmail.com",
-        "SMTP_PASSWORD": "ignatik1002"
+        "SMTP_USER": "quizgames.dev@gmail.com",
+        "SMTP_PASSWORD": "12345678aAqQ"
     }
 }
