@@ -1,7 +1,12 @@
 {
     "Server": {
         "PORT": 3000,
-        "clientURL": "http://localhost:4200"
+        "clientURL": "http://localhost:4200",
+        "ApiUrl": "http://localhost:3000"
+    },
+    "clientUrl": {
+        "activationRedirect": "http://localhost:4200/auth/account-verification?isVerified=true",
+        "resetPasswordRedirect": "http://localhost:4200/auth/reset-password"
     },
     "DataBase": {
         "config": {
@@ -30,5 +35,11 @@
         "client_id": "462840802180153",
         "client_secret": "f1ca4a0c197549a1eb245d322a217dd7",
         "redirect_uri": "http://localhost:4200/auth/login"
+    },
+    "mailConfig": {
+        "SMTP_HOST": "smtp.gmail.com",
+        "SMTP_PORT": 587,
+        "SMTP_USER": "ignatmustafin77@gmail.com",
+        "SMTP_PASSWORD": "ignatik1002"
     }
 }

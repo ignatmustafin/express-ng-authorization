@@ -37,9 +37,6 @@ export default {
         ],
     resetPasswordValidator: 
         [
-            check('oldPassword')
-                .isLength({min: 6}).withMessage("wrong old password")
-                .not().matches(/[#$%^&\\/"'@ _]/g).withMessage("wrong old password"),
             check('newPassword')
                 .isLength({min: 6}).withMessage("wrong new password")
                 .not().matches(/[#$%^&\\/"'@ _]/g).withMessage("wrong new password"),

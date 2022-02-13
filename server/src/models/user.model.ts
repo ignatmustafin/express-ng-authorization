@@ -1,5 +1,6 @@
 import sequelize from '../db.connect';
 import {DataTypes} from 'sequelize';
+import Activations from './activation.model';
 
 const User = sequelize.define(
     "users",
@@ -47,5 +48,13 @@ const User = sequelize.define(
         }
     }
 );
-
+User.hasOne(Activations, {
+    as: "isActivated",
+    foreignKey: {
+        name: 'user_id',
+        allowNull: false,
+    },
+    onDelete: 'cascade',
+    onUpdate: 'cascade'
+});
 export default User;

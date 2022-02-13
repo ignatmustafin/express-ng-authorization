@@ -5,21 +5,52 @@ import tokenService from '../token/token.service';
 import ApiError from '../error-service/api.errors';
 import GoogleService from '../axios/google.service';
 import FacebookService from "../axios/facebook.service";
-
+import { v4 as uuidv4 } from 'uuid';
+import mailService from '../mail-service/mail.service';
+import config from 'config';
+import Activations from '../../models/activation.model';
 class AuthService {
-    async registration(email: string, password: string, firstName: string, lastName: string) {
+    async registration(email: string, password: string, firstName: string, lastName: string, transaction: any) {
+
         const hashedPassword = await bcrypt.hash(password, 7);
-        const user: any = await User.create({firstName, lastName, email, password: hashedPassword});
+        const user: any = await User.create({firstName, lastName, email, password: hashedPassword}, {transaction});
         const userDto = new UserDto(user);
 
+        const activationLink = uuidv4();
+        const uniqueLink = `${config.get("clientUrl.activationRedirect")}?link=${activationLink}`;
+        const saveActivationLink = await Activations.create({
+            activationLink,
+            user_id: userDto.id
+        }, {transaction});
+
+        if(!saveActivationLink) {
+            throw ApiError.BadRequest("some problems with activation link, try again later");
+        }
+
+        await mailService.sendActivationEmail(email, uniqueLink);
+
         const tokens = tokenService.generateToken({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
         return {user: userDto, ...tokens};
     }
 
-    async signIn(email: string, password: string) {
-        const user: any = await User.findOne({where: {email}});
+    async activate(activationLink: any) {
+        const changeIsActivatedValue: any = await Activations.update({isActivated: true}, {where: {activation_link: activationLink}, returning: true});
+        if(changeIsActivatedValue[0] === 0) {
+            throw ApiError.BadRequest("404 NOT FOUND");
+        }
+        return changeIsActivatedValue;
+    }
 
+    async signIn(email: string, password: string, transaction: any) {
+        const user: any = await User.findOne({where: {email}, raw: true, 
+            include: {
+                model: Activations,
+                as: "isActivated",
+                required: true,
+                attributes: ["is_activated"],
+            }
+        });
         if (!user) {
             throw ApiError.BadRequest("Incorrect email or password");
         }
@@ -30,14 +61,20 @@ class AuthService {
             throw ApiError.BadRequest("Incorrect email or password");
         }
 
+        const userActivated = user['isActivated.is_activated'];
+
+        if(!userActivated) {
+            throw ApiError.BadRequest("account is not activated");
+        }
+
         const userDto = new UserDto(user);
         const tokens = tokenService.generateToken({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
-
+        await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
         return {...userDto, ...tokens};
     }
 
-    async signInWithGoogle(code: string) {
+    async signInWithGoogle(code: string, transaction: any) {
+
         const tokensData: any = await GoogleService.getToken(code);
         const userData: any = await GoogleService.getUserData(tokensData.data.access_token);
         const user: any = await User.findOne({where: {email: userData.data.email}});
@@ -50,24 +87,23 @@ class AuthService {
                 googleRegistration: true
             };
 
-            const user: any = await User.create({...newUser});
+            const user: any = await User.create({...newUser}, {transaction});
             const userDto = new UserDto(user);
 
             const tokens = tokenService.generateToken({...userDto});
-            await tokenService.saveToken(userDto.id, tokens.refreshToken);
-
+            await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
             return {...userDto, ...tokens};
         }
 
         const userDto = new UserDto(user);
 
         const tokens = tokenService.generateToken({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
 
         return {...userDto, ...tokens};
     }
 
-    async signInWithFacebook(code: string) {
+    async signInWithFacebook(code: string, transaction: any) {
         const tokensData: any = await FacebookService.getToken(code);
         const userData: any = await FacebookService.getUserData(tokensData.data.access_token);
         const user: any = await User.findOne({where: {email: userData.data.email}});
@@ -80,11 +116,11 @@ class AuthService {
                 googleRegistration: true
             };
 
-            const user: any = await User.create({...newUser});
+            const user: any = await User.create({...newUser}, {transaction});
             const userDto = new UserDto(user);
 
             const tokens = tokenService.generateToken({...userDto});
-            await tokenService.saveToken(userDto.id, tokens.refreshToken);
+            await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
 
             return {...userDto, ...tokens};
         }
@@ -92,7 +128,7 @@ class AuthService {
         const userDto = new UserDto(user);
 
         const tokens = tokenService.generateToken({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
 
         return {...userDto, ...tokens};
     }
@@ -107,7 +143,7 @@ class AuthService {
         throw ApiError.BadRequest("not signed in");
     }
 
-    async refresh(refreshToken: string) {
+    async refresh(refreshToken: string, transaction: any) {
         if (!refreshToken) {
             throw ApiError.UnauthorizedError();
         }
@@ -123,33 +159,52 @@ class AuthService {
         const userDto = new UserDto(user);
 
         const tokens = tokenService.generateToken({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
 
         return {user: userDto, ...tokens};
     }
 
-    async getResetPasswordLink(userEmail: string) {
-        const user: any = await User.findOne({where: {email: userEmail}});
+    async getResetPasswordLink(email: any) {
+        const user: any = await User.findOne({where: {email}});
 
         if (!user) {
             throw ApiError.BadRequest("There is no user with this email");
         }
 
-        return true;
+        const resetPasswordLink = uuidv4();
+        const uniqueLink = `${config.get("clientUrl.resetPasswordRedirect")}?link=${resetPasswordLink}&id=${user.id}`;
+        const updateLinkForUser = await Activations.update({ activationLink: resetPasswordLink},
+            {
+                where: {user_id: user.id},
+                returning: true
+            }
+        );
+        console.log(updateLinkForUser);
+        if(updateLinkForUser[0] === 0) {
+            throw ApiError.BadRequest("some problems with reset password link, try again later");
+        }
+
+        await mailService.sendResetPasswordLink(user.email, uniqueLink);
+
+        return updateLinkForUser;
     }
 
-    async resetPassword(userId: number, oldPassword: string, newPassword: string) {
-        const user: any = await User.findByPk(userId);
-        const checkOldPassword = await bcrypt.compare(oldPassword, user.password);
-        
-        if (!checkOldPassword) {
-            throw ApiError.BadRequest("Old password not valid");
+    async resetPassword(userId: number, newPassword: string, link: any, transaction: any) {
+        const user: any = await User.findByPk(userId, {transaction});
+
+        const checkIfLinkActive = await Activations.findOne({where: {activation_link: link, user_id: user.id}, transaction});
+
+        if (!checkIfLinkActive) {
+            throw ApiError.BadRequest("Link is not active");
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 7);
-        const createNewPassword = await User.update({password: hashedPassword}, {where: {id: user.id}, returning: true});
+        const createNewPassword = await User.update({password: hashedPassword}, {where: {id: user.id}, returning: true, transaction});
 
         const updatedUser = createNewPassword[1].map((users: any) => users.dataValues);
+       
+        await Activations.update({activationLink: ""}, {where: {user_id: user.id}, transaction});
+
         return new UserDto(updatedUser[0]);
     }
 }
