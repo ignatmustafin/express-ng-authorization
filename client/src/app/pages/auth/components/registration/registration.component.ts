@@ -35,13 +35,13 @@ export class RegistrationComponent implements OnInit {
                 password: this.form.controls['password'].value,
                 firstName: this.form.controls['firstName'].value,
                 lastName: this.form.controls['lastName'].value,
-                passwordConfirmation: this.form.controls['confirmPassword'].value
+                confirmPassword: this.form.controls['confirmPassword'].value
             };
 
             this.authService.doRegistration(user).subscribe({
                 next: () => {
                     localStorage.setItem('confirm.email', JSON.stringify(user.email));
-                    this.router.navigate(['/auth/account-verification'], {queryParams: {isVerified: false}});
+                    this.router.navigate(['/auth/account-verification']);
                 },
                 error: error => {
                     console.log(error)

@@ -7,15 +7,14 @@ const router = Router();
 const auth = new AuthController();
 
 router.post('/registration', authValidation(validations.registrationValidators), auth.registration);
-
-router.get('/activate/:link', auth.activate);
+router.get('/activate', auth.activate);
 
 router.post('/signIn', authValidation(validations.signInValidation), auth.signIn);
 router.post('/signInWithGoogle', auth.signInWithGoogle);
 router.post('/signInWithFacebook', auth.signInWithFacebook);
 
 router.post('/getResetLink', auth.getResetPasswordLink);
-router.post('/resetPassword/:link', authValidation(validations.resetPasswordValidator), auth.resetPassword);
+router.post('/resetPassword', authValidation(validations.resetPasswordValidator), auth.resetPassword);
 
 router.post('/signOut', auth.signOut);
 router.post('/refreshToken', auth.refreshToken);

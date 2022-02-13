@@ -1,5 +1,5 @@
 <section class="account-verification">
-    <div *ngIf="!isVerified" class="before-confirm-container">
+    <div *ngIf="!link" class="before-confirm-container">
         <p class="account-message">
             We have sent an email with a confirmation link to your email address <b>{{userEmail}}</b>. In order to
             complete the sign-up process, please click the confirmation link.
@@ -10,7 +10,7 @@
         </p>
     </div>
 
-    <div *ngIf="isVerified" class="after-confirm-container">
+    <div *ngIf="link" class="after-confirm-container">
         <p class="account-message">
             Your email has been verified and you will be redirected to the login page in
             <b>{{countDownTime}}</b>

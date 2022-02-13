@@ -21,9 +21,10 @@ export default class AuthController {
 
     async activate(req: express.Request, res: express.Response, next: express.NextFunction) {
         try {
-            const {link} = req.query;
-            await authService.activate(link);
-            return res.status(200);
+            const {link} = req.query
+
+            await authService.activate(<string>link);
+            return res.status(200).json({success: true});
         } catch (error) {
             next(error);
         }
@@ -35,10 +36,12 @@ export default class AuthController {
         try {
             const {email, password} = req.body;
             const userData = await authService.signIn(email, password, transaction);
+
+
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
 
             await transaction.commit();
-            return res.status(201).json({success: true, data: userData});
+            return res.status(201).json({success: true, data: {...userData, refreshToken: ''}});
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -50,8 +53,11 @@ export default class AuthController {
 
         try {
             const userData = await authService.signInWithGoogle(req.body.code, transaction);
+            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
+
             await transaction.commit();
-            return res.status(201).json({success: true, data: userData});
+
+            return res.status(201).json({success: true, data: {...userData, refreshToken: ''}});
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -63,9 +69,10 @@ export default class AuthController {
 
         try {
             const userData = await authService.signInWithFacebook(req.body.code, transaction);
+            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
 
             await transaction.commit();
-            return res.status(201).json({success: true, data: userData});
+            return res.status(201).json({success: true, data: {...userData, refreshToken: ''}});
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -92,7 +99,7 @@ export default class AuthController {
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
 
             await transaction.commit();
-            return res.status(201).json({success: true, data: userData});
+            return res.status(201).json({success: true, data: {...userData, refreshToken: ''}});
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -114,10 +121,9 @@ export default class AuthController {
         const transaction: any = await sequelize.transaction();
 
         try {
-            const {newPassword} = req.body;
-            const {link} = req.params;
-            const id: any = req.query.id;
-            const userData = await authService.resetPassword(id, newPassword, link, transaction);
+            const {link, id, newPassword} = req.body;
+
+            const userData = await authService.resetPassword(<any>id, newPassword, link, transaction);
 
             await transaction.commit();
             return res.status(200).json({success: true, data: userData});

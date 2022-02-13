@@ -23,7 +23,7 @@ export default {
             check('password')
                 .isLength({min: 6}).withMessage("password too short")
                 .not().matches(/[#$%^&\\/"'@ _]/g).withMessage("password must contain only letters and numbers"),
-            check('passwordConfirmation')
+            check('confirmPassword')
                 .custom((value, {req}) => value === req.body.password)
         ],
     signInValidation:
@@ -40,7 +40,7 @@ export default {
             check('newPassword')
                 .isLength({min: 6}).withMessage("wrong new password")
                 .not().matches(/[#$%^&\\/"'@ _]/g).withMessage("wrong new password"),
-            check('passwordConfirmation')
+            check('confirmPassword')
                 .custom((value, {req}) => value === req.body.newPassword)
         ]
     

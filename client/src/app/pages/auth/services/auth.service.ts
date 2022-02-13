@@ -28,6 +28,10 @@ export class AuthService {
         return this.http.post(`/auth/registration`, {...user});
     }
 
+    doActivateAccount(link: string): Observable<any> {
+        return this.http.get(`/auth/activate?link=${link}`);
+    }
+
     doSignIn(email: string, password: string): Observable<any> {
         return this.http.post(`/auth/signIn`, {email, password})
             .pipe(
@@ -72,12 +76,12 @@ export class AuthService {
             );
     }
 
-    getResetPasswordLink(email: string) : Observable<any> {
+    getResetPasswordLink(email: string): Observable<any> {
         return this.http.post('/auth/getResetLink', {email: email});
     }
 
-    doResetPassword(code: string): Observable<any> {
-        return this.http.post('/auth/resetPassword', {code: code});
+    doResetPassword(link: string, id: string, newPassword: string, confirmPassword: string): Observable<any> {
+        return this.http.post('/auth/resetPassword', {link, id, newPassword, confirmPassword});
     }
 
     refreshToken() {
@@ -95,6 +99,7 @@ export class AuthService {
         const accessToken = JSON.parse(atob(this.currentUserValue!.accessToken.split('.')[1]));
         const expires = new Date(accessToken.exp * 1000);
         const timeout = expires.getTime() - Date.now() - (60 * 1000);
+        console.log(timeout)
         this.refreshTokenTimeout = setTimeout(() => this.refreshToken().subscribe(), timeout);
     }
 

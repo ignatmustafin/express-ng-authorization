@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {interval, take} from "rxjs";
 import {map} from "rxjs/operators";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
     selector: 'app-account-verification',
@@ -11,24 +12,31 @@ import {map} from "rxjs/operators";
 export class AccountVerificationComponent implements OnInit {
 
     public userEmail!: string;
-    public isVerified!: boolean;
+    public link !: string;
     public countDownSubscription: any;
     public countDownTime = 5;
 
     constructor(
         private router: Router,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private authService: AuthService
     ) {
     }
 
     ngOnInit(): void {
         this.activatedRoute.queryParams.subscribe({
             next: result => {
-                this.isVerified = result['before']
+                this.link = result['link'];
             }
         });
 
-        if (this.isVerified) {
+        if (this.link) {
+            this.authService.doActivateAccount(this.link).subscribe({
+                error: error => {
+                    console.log(error)
+                }
+            });
+
             this.countDownSubscription = interval(1000)
                 .pipe(
                     take(5),

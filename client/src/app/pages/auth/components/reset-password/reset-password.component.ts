@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../services/auth.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'app-reset-password',
@@ -11,20 +12,37 @@ export class ResetPasswordComponent implements OnInit {
 
     public formResetPassword !: FormGroup;
     public formSetNewPassword !: FormGroup;
+
+    public confirmedEmail: boolean = false;
     public resetPassword: boolean = false;
+    public passwordWasChanged: boolean = false;
 
     public userEmail: string = '';
-    public confirmedEmail: boolean = false;
-
     public errorWithEmail: string = '';
+
+    public link!: string;
+    public id!: string;
 
     constructor(
         private authService: AuthService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private activatedRoute: ActivatedRoute
     ) {
     }
 
     ngOnInit(): void {
+        this.activatedRoute.queryParams.subscribe({
+            next: result => {
+                this.link = result['link'];
+                this.id = result['id'];
+
+                if (this.link && this.id) {
+                    this.resetPassword = true;
+                }
+            }
+        });
+
+
         this.formResetPassword = this.formBuilder.group({
             email: ['', [Validators.required, Validators.email]]
         });
@@ -43,6 +61,7 @@ export class ResetPasswordComponent implements OnInit {
                 next: () => {
                     this.userEmail = userEmail;
                     this.confirmedEmail = true;
+                    this.formSetNewPassword.reset();
                 },
                 error: error => {
                     this.errorWithEmail = error.message;
@@ -53,9 +72,13 @@ export class ResetPasswordComponent implements OnInit {
 
     setNewPassword() {
         if (this.formSetNewPassword.valid) {
-            this.authService.doResetPassword('123123').subscribe({
-                next: () => {
+            const newPassword = this.formSetNewPassword.controls['password'].value;
+            const confirmPassword = this.formSetNewPassword.controls['confirmPassword'].value;
 
+            this.authService.doResetPassword(this.link, this.id, newPassword, confirmPassword).subscribe({
+                next: () => {
+                    this.passwordWasChanged = true;
+                    this.formSetNewPassword.reset();
                 },
                 error: error => {
                     console.log(error);
