@@ -1,5 +1,5 @@
 import {Router} from "express";
-import AuthController from "../../controllers/auth/auth.controller";
+import { AuthController } from "../../controllers";
 import authValidation from "../../middlewares/auth-validation.middleware";
 import validations from "../../services/validators/user-validation.service";
 

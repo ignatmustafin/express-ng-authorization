@@ -1,6 +1,6 @@
 import express from 'express';
 import {validationResult, ValidationChain} from 'express-validator';
-import ApiError from '../services/error-service/api.errors';
+import { ApiError } from '../services';
 
 export default function authValidation(validations: ValidationChain[]) {
     return async (req: express.Request, res: express.Response, next: express.NextFunction) => {

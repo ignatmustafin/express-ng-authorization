@@ -1,6 +1,5 @@
 import express from 'express';
-import ApiError from '../services/error-service/api.errors';
-import tokenService from '../services/token/token.service';
+import { ApiError, tokenService } from '../services';
 
 export default function(req: any, res: express.Response, next: express.NextFunction) {
     try {
