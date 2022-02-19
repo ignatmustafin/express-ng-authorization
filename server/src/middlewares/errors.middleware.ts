@@ -1,5 +1,5 @@
 import express from 'express';
-import ApiError from '../services/error-service/api.errors';
+import { ApiError } from '../services';
 
 export default (err: any, req: express.Request, res: express.Response, next: any) => {
     console.error(err);

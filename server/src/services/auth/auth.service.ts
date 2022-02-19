@@ -11,6 +11,7 @@ import GoogleService from '../axios/google.service';
 import FacebookService from "../axios/facebook.service";
 import mailService from '../mail-service/mail.service';
 import ApiError from '../error-service/api.errors';
+import { activationsUtils, tokenUtils } from '../../utils';
 
 class AuthService {
     async registration(email: string, password: string, firstName: string, lastName: string, transaction: any) {
@@ -35,8 +36,7 @@ class AuthService {
 
         await mailService.sendActivationEmail(email, uniqueLink);
 
-        const tokens = tokenService.generateToken({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
+        const tokens = await tokenUtils.generateAndSaveTokens({...userDto}, transaction)
 
         return {user: userDto, ...tokens};
     }
@@ -82,9 +82,8 @@ class AuthService {
         }
 
         const userDto = new UserDto(user);
-        const tokens = tokenService.generateToken({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
-
+        const tokens = await tokenUtils.generateAndSaveTokens({...userDto}, transaction)
+      
         return {...userDto, ...tokens};
     }
 
@@ -104,16 +103,15 @@ class AuthService {
             const user: any = await User.create({...newUser}, {transaction});
             const userDto = new UserDto(user);
 
-            const tokens = tokenService.generateToken({...userDto});
-            await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
+            const tokens = await tokenUtils.generateAndSaveTokens({...userDto}, transaction)
 
             return {...userDto, ...tokens};
         }
 
         const userDto = new UserDto(user);
 
-        const tokens = tokenService.generateToken({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
+        const tokens = await tokenUtils.generateAndSaveTokens({...userDto}, transaction)
+
 
         return {...userDto, ...tokens};
     }
@@ -134,16 +132,15 @@ class AuthService {
             const user: any = await User.create({...newUser}, {transaction});
             const userDto = new UserDto(user);
 
-            const tokens = tokenService.generateToken({...userDto});
-            await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
+            const tokens = await tokenUtils.generateAndSaveTokens({...userDto}, transaction)
+
 
             return {...userDto, ...tokens};
         }
 
         const userDto = new UserDto(user);
 
-        const tokens = tokenService.generateToken({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
+        const tokens = await tokenUtils.generateAndSaveTokens({...userDto}, transaction)
 
         return {...userDto, ...tokens};
     }
@@ -173,8 +170,7 @@ class AuthService {
         const user = await User.findByPk(userData.id);
         const userDto = new UserDto(user);
 
-        const tokens = tokenService.generateToken({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken, transaction);
+        const tokens = await tokenUtils.generateAndSaveTokens({...userDto}, transaction)
 
         return {user: userDto, ...tokens};
     }
@@ -225,7 +221,7 @@ class AuthService {
 
         const updatedUser = createNewPassword[1].map((users: any) => users.dataValues);
 
-        await Activations.update({activationLink: ""}, {where: {user_id: user.id}, transaction});
+        await activationsUtils.clearActivationLink(user.id, transaction)
 
         return new UserDto(updatedUser[0]);
     }

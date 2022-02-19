@@ -1,6 +1,6 @@
 import express from 'express';
 import sequelize from '../../db.connect';
-import authService from '../../services/auth/auth.service';
+import { authService } from '../../services';
 
 export default class AuthController {
 
@@ -11,8 +11,10 @@ export default class AuthController {
             const {firstName, lastName, email, password} = req.body;
             const userData = await authService.registration(email, password, firstName, lastName, transaction) as any;
 
+            const generateResponse = Object.fromEntries(Object.entries(userData).filter((item: any) => item[0] !== "refreshToken"));
+
             await transaction.commit();
-            res.status(201).json({success: true, data: userData});
+            res.status(201).json({success: true, data: generateResponse});
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -35,13 +37,12 @@ export default class AuthController {
 
         try {
             const {email, password} = req.body;
-            const userData = await authService.signIn(email, password, transaction);
-
+            const userData: any = await authService.signIn(email, password, transaction);
 
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
-
+            const generateResponse = Object.fromEntries(Object.entries(userData).filter((item: any) => item[0] !== "refreshToken"));
             await transaction.commit();
-            return res.status(201).json({success: true, data: {...userData, refreshToken: ''}});
+            return res.status(201).json({success: true, data: generateResponse});
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -54,10 +55,11 @@ export default class AuthController {
         try {
             const userData = await authService.signInWithGoogle(req.body.code, transaction);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
+            const generateResponse = Object.fromEntries(Object.entries(userData).filter((item: any) => item[0] !== "refreshToken"));
 
             await transaction.commit();
 
-            return res.status(201).json({success: true, data: {...userData, refreshToken: ''}});
+            return res.status(201).json({success: true, data: generateResponse});
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -70,9 +72,10 @@ export default class AuthController {
         try {
             const userData = await authService.signInWithFacebook(req.body.code, transaction);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
+            const generateResponse = Object.fromEntries(Object.entries(userData).filter((item: any) => item[0] !== "refreshToken"));
 
             await transaction.commit();
-            return res.status(201).json({success: true, data: {...userData, refreshToken: ''}});
+            return res.status(201).json({success: true, data: generateResponse});
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -97,9 +100,10 @@ export default class AuthController {
             const {refreshToken} = req.cookies;
             const userData = await authService.refresh(refreshToken, transaction);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
+            const generateResponse = Object.fromEntries(Object.entries(userData).filter((item: any) => item[0] !== "refreshToken"));
 
             await transaction.commit();
-            return res.status(201).json({success: true, data: {...userData, refreshToken: ''}});
+            return res.status(201).json({success: true, data: generateResponse});
         } catch (error) {
             await transaction.rollback();
             next(error);
